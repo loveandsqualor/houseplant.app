@@ -1,12 +1,13 @@
 use actix_web::{middleware, web, App, HttpServer, Responder, HttpResponse, get, post, error, guard, HttpRequest};
-use actix_session::{Session, CookieSession};
+use actix_session::{Session, SessionMiddleware, storage::CookieSessionStore};
+use actix_web::cookie::Key;
 use serde::{Serialize, Deserialize};
 use sqlx::sqlite::{SqlitePool};
 use sqlx::Row;
 use tera::{Tera, Context};
 use std::env;
 use dotenv::dotenv;
-use chrono::{Utc, Duration};
+use chrono::{Utc};
 use reqwest;
 use csv;
 
@@ -33,7 +34,7 @@ struct User {
     id: i64,
     email: String,
     is_member: bool,
-    membership_expires_on: Option<chrono::DateTime<Utc>>,
+    membership_expires_on: Option<String>, // Changed to String to fix sqlx compatibility
     is_admin: bool,
 }
 
@@ -167,7 +168,7 @@ async fn view_cart(session: Session, tera: web::Data<Tera>) -> impl Responder {
 }
 
 #[post("/create-transfer-request")]
-async fn create_transfer_request(session: Session, form: web::Form<serde_json::Value>) -> impl Responder {
+async fn create_transfer_request(session: Session, _form: web::Form<serde_json::Value>) -> impl Responder {
     let cart: Vec<CartItem> = session.get("cart").unwrap_or_else(|_| Some(Vec::new())).unwrap_or_default();
     if cart.is_empty() {
         return HttpResponse::BadRequest().body("Cart is empty");
@@ -290,12 +291,19 @@ async fn main() -> std::io::Result<()> {
     init_db(&pool).await.expect("Failed to initialize database.");
 
     let tera = Tera::new("templates/**/*.html").expect("Parsing error");
-
+    
     println!("🚀 Server started at http://127.0.0.1:8080");
+    
+    let secret_key = Key::from(&[0; 64]); // Must be 64 bytes
 
     HttpServer::new(move || {
         App::new()
-            .wrap(CookieSession::signed(&[0; 32]).secure(false))
+            .wrap(
+                SessionMiddleware::new(
+                    CookieSessionStore::default(),
+                    secret_key.clone(),
+                )
+            )
             .app_data(web::Data::new(pool.clone()))
             .app_data(web::Data::new(tera.clone()))
             .service(home)
