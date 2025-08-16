@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Cart - Houseplant Haven</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <header>
+        <h1>Your Shopping Cart</h1>
+        <nav>
+            <a href="/">Home</a>
+            <a href="/menu">Menu</a>
+        </nav>
+    </header>
+    <main>
+        <div class="cart-container">
+            {% if cart is not empty %}
+                <h2>Review Your Order</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Item</th>
+                            <th>Price</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in cart %}
+                        <tr>
+                            <td>{{ item.name }}</td>
+                            <td>${{ "%.2f" | format(value=item.price) }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td><strong>Total</strong></td>
+                            <td><strong>${{ "%.2f" | format(value=total_price) }}</strong></td>
+                        </tr>
+                    </tfoot>
+                </table>
+                
+                <form action="/create-checkout-session" method="POST" class="checkout-form">
+                    <h3>Enter your email to proceed:</h3>
+                    <p>Your membership will be linked to this email address.</p>
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" name="email" required placeholder="you@example.com">
+                    <button type="submit" class="cta-button">Proceed to Checkout</button>
+                </form>
+
+            {% else %}
+                <div class="empty-cart-message">
+                    <h2>Your cart is empty.</h2>
+                    <p>Looks like you haven't added any plants yet.</p>
+                    <a href="/menu" class="cta-button">Start Shopping</a>
+                </div>
+            {% endif %}
+        </div>
+    </main>
+    <footer>
+        <p>&copy; 2025 Houseplant Haven. All rights reserved.</p>
+    </footer>
+</body>
+</html>

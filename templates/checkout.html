@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout - Houseplant Haven</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <header>
+        <h1>Checkout</h1>
+        <nav>
+            <a href="/">Home</a>
+            <a href="/menu">Menu</a>
+            <a href="/membership">Membership</a>
+            <a href="/cart">Cart</a>
+            <a href="/admin/products">Admin</a>
+        </nav>
+    </header>
+    <main>
+        <div class="checkout-container">
+            <h2>Total: ${{ "%.2f" | format(value=total_price) }}</h2>
+            <p>You will be redirected to Stripe to complete your payment securely.</p>
+            <form action="/create-checkout-session" method="POST">
+                <button type="submit" class="cta-button">Pay with Stripe</button>
+            </form>
+        </div>
+    </main>
+    <footer>
+        <p>&copy; 2025 Houseplant Haven. All rights reserved.</p>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Our Plants - Houseplant Haven</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <header>
+        <h1>Our Menu</h1>
+        <nav>
+            <a href="/">Home</a>
+            <a href="/menu">Menu</a>
+            <a href="/membership">Membership</a>
+            <a href="/cart">Cart</a>
+            <a href="/admin/products">Admin</a>
+        </nav>
+    </header>
+    <main>
+        <div class="product-grid">
+            {% for product in products %}
+            <div class="product-card">
+                <img src="{{ product.image_url | default(value='https://placehold.co/300x300/2e8b57/ffffff?text=Plant') }}" alt="{{ product.name }}">
+                <h3>{{ product.name }}</h3>
+                <p>{{ product.description | default(value='A beautiful plant.') }}</p>
+                <div class="price">${{ product.price }}</div>
+                <button onclick="addToCart({{ product.id }})">Add to Cart</button>
+            </div>
+            {% endfor %}
+        </div>
+    </main>
+    <footer>
+        <p>&copy; 2025 Houseplant Haven. All rights reserved.</p>
+    </footer>
+    <script>
+        async function addToCart(productId) {
+            try {
+                const response = await fetch('/add_to_cart', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(productId)
+                });
+                const result = await response.json();
+                if (result.success) {
+                    alert('Added to cart!');
+                } else {
+                    alert('Failed to add to cart.');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('An error occurred.');
+            }
+        }
+    </script>
+</body>
+</html>
