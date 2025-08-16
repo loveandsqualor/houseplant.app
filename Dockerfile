@@ -1,6 +1,6 @@
 
 # --- Stage 1: Build Stage ---
-FROM rust:1.72-slim as builder
+FROM rust:latest as builder
 
 WORKDIR /usr/src/app
 

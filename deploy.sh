@@ -1,5 +1,3 @@
-
-
 # Exit immediately if a command exits with a non-zero status.
 set -e
 
@@ -36,7 +34,7 @@ fi
 
 # --- 4. Build Docker Image ---
 echo "Building Docker image: $DOCKER_IMAGE_NAME..."
-docker build -t "$DOCKER_IMAGE_NAME" .
+docker build --no-cache -t "$DOCKER_IMAGE_NAME" .
 echo "Docker image built successfully."
 
 # --- 5. Stop and Remove Existing Container ---
