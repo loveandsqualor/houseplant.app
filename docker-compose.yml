@@ -1,0 +1,28 @@
+version: '3'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: botanical-bliss
+    ports:
+      - "8082:8080"  # Maps container port 8080 to host port 8082
+    volumes:
+      - ./houseplants.db:/app/houseplants.db
+      - ./uploads:/app/uploads
+      - ./logs:/app/logs
+    environment:
+      - DATABASE_URL=sqlite:houseplants.db
+      - APP_HOST=0.0.0.0
+      - APP_PORT=8080
+      - APP_ENV=production
+      - RUST_LOG=debug  # Set to debug for more verbose logging
+      - SESSION_SECRET_KEY=${SESSION_SECRET_KEY:-defaultsecretkey123456789012345678901234}
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 5s
