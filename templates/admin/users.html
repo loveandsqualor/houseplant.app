@@ -216,14 +216,14 @@
         </div>
 
         <div class="search-bar">
-            <input type="text" class="search-input" placeholder="Search users...">
-            <select class="filter-dropdown">
+            <input type="text" id="searchInput" class="search-input" placeholder="Search users...">
+            <select id="filterSelect" class="filter-dropdown">
                 <option value="all">All Users</option>
                 <option value="active">Active Only</option>
                 <option value="inactive">Inactive Only</option>
                 <option value="premium">Premium Only</option>
             </select>
-            <button class="search-btn">Search</button>
+            <button id="searchBtn" class="search-btn">Search</button>
         </div>
 
         <div class="table-responsive">
@@ -289,5 +289,58 @@
     <footer>
         <p>&copy; 2025 Houseplant Haven. All rights reserved.</p>
     </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchInput = document.getElementById('searchInput');
+            const filterSelect = document.getElementById('filterSelect');
+            const searchBtn = document.getElementById('searchBtn');
+            const userRows = document.querySelectorAll('.users-table tbody tr');
+
+            // Search function
+            function performSearch() {
+                const searchTerm = searchInput.value.toLowerCase();
+                const filterValue = filterSelect.value;
+                
+                userRows.forEach(row => {
+                    const name = row.querySelector('td:nth-child(2)').textContent.toLowerCase();
+                    const email = row.querySelector('td:nth-child(3)').textContent.toLowerCase();
+                    const status = row.querySelector('td:nth-child(4)').textContent.toLowerCase();
+                    const membership = row.querySelector('td:nth-child(6)').textContent.toLowerCase();
+                    
+                    // Search term matching
+                    const matchesSearch = searchTerm === '' || 
+                                         name.includes(searchTerm) || 
+                                         email.includes(searchTerm);
+                    
+                    // Filter matching
+                    let matchesFilter = true;
+                    if (filterValue === 'active') {
+                        matchesFilter = status.includes('active');
+                    } else if (filterValue === 'inactive') {
+                        matchesFilter = status.includes('inactive');
+                    } else if (filterValue === 'premium') {
+                        matchesFilter = membership.toLowerCase().includes('premium');
+                    }
+                    
+                    // Show or hide based on combined criteria
+                    if (matchesSearch && matchesFilter) {
+                        row.style.display = '';
+                    } else {
+                        row.style.display = 'none';
+                    }
+                });
+            }
+
+            // Event listeners
+            searchBtn.addEventListener('click', performSearch);
+            searchInput.addEventListener('keyup', function(event) {
+                if (event.key === 'Enter') {
+                    performSearch();
+                }
+            });
+            filterSelect.addEventListener('change', performSearch);
+        });
+    </script>
 </body>
 </html>

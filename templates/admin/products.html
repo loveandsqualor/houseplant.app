@@ -217,7 +217,7 @@
         
         <div class="add-product-form">
             <h2 class="form-title">Add New Product</h2>
-            <form action="/admin/products/add" method="POST" enctype="multipart/form-data">
+            <form action="/admin/products/add" method="POST">
                 <div class="form-group">
                     <label for="name">Product Name</label>
                     <input type="text" id="name" name="name" required>
@@ -235,8 +235,9 @@
                     <textarea id="description" name="description" rows="3"></textarea>
                 </div>
                 <div class="form-group">
-                    <label for="image">Product Image</label>
-                    <input type="file" id="image" name="image" accept="image/*">
+                    <label for="image_url">Image URL</label>
+                    <input type="text" id="image_url" name="image_url" placeholder="/static/images/your-image.jpg">
+                    <small>Enter the URL of the image (e.g., /static/images/monstera.jpg)</small>
                 </div>
                 <button type="submit" class="btn-add">Add Product</button>
             </form>
