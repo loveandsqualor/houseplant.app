@@ -1634,6 +1634,15 @@ async fn admin_users(session: Session, pool: web::Data<SqlitePool>, tera: web::D
     }
 }
 
+#[get("/health")]
+async fn health_check() -> impl Responder {
+    HttpResponse::Ok().json(serde_json::json!({
+        "status": "ok",
+        "timestamp": chrono::Utc::now().to_rfc3339(),
+        "version": env!("CARGO_PKG_VERSION")
+    }))
+}
+
 async fn export_users_csv(session: Session, pool: web::Data<SqlitePool>) -> impl Responder {
     if !is_admin(&session) {
         return HttpResponse::Forbidden().body("Access denied");
@@ -1717,7 +1726,14 @@ async fn main() -> std::io::Result<()> {
     // Generate a random secret key (more secure than static bytes)
     let secret_key = Key::generate();
     
-    info!("🚀 Server starting at http://127.0.0.1:8080");
+    info!("🚀 Server preparing to start...");
+    
+    // Get host and port from environment variables with fallbacks
+    let app_host = env::var("APP_HOST").unwrap_or_else(|_| "0.0.0.0".to_string());
+    let app_port = env::var("APP_PORT").unwrap_or_else(|_| "8080".to_string());
+    let bind_addr = format!("{}:{}", app_host, app_port);
+    
+    info!("🚀 Server binding to {}", bind_addr);
     
     HttpServer::new(move || {
         App::new()
@@ -1732,6 +1748,7 @@ async fn main() -> std::io::Result<()> {
             .wrap(middleware::Logger::default())
             .app_data(web::Data::new(pool.clone()))
             .app_data(web::Data::new(tera.clone()))
+            .service(health_check)
             .service(home)
             .service(login_page)
             .service(login)
@@ -1765,7 +1782,7 @@ async fn main() -> std::io::Result<()> {
                     .route("/users/export", web::get().to(export_users_csv)),
             )
     })
-    .bind("0.0.0.0:8080")?
+    .bind(&bind_addr)?
     .run()
     .await
 }
