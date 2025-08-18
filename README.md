@@ -98,8 +98,30 @@ open http://localhost:8080
 ```
 
 ### Docker Deployment
+
+#### Quick Docker Start
 ```bash
-# Build and deploy
+# Build and run using our simplified script
+./run-docker.sh
+
+# Access application (default admin login)
+# Email: admin@houseplant.app
+# Password: admin123
+open http://localhost:8082
+```
+
+#### Using Docker Compose
+```bash
+# Start with Docker Compose
+docker-compose up -d
+
+# Access application
+open http://localhost:8082
+```
+
+#### Manual Docker Deployment
+```bash
+# Build and deploy with script
 ./deploy.sh
 
 # Or custom build
@@ -108,6 +130,27 @@ open http://localhost:8080
 # Test functionality
 ./test-flow.sh
 ```
+
+## 🔍 Troubleshooting
+
+### Blank Admin Pages
+If you encounter blank admin pages when running the application in Docker:
+
+1. **Check Docker Configuration**: 
+   - Ensure you're exposing port 8080 from the container
+   - Make sure your APP_HOST is set to `0.0.0.0` in .env, not `127.0.0.1`
+
+2. **Authentication Issues**:
+   - Verify you're logged in as admin (admin@houseplant.app / admin123)
+   - Check SESSION_SECRET_KEY is properly set in your .env file
+
+3. **Template Path Resolution**:
+   - If templates still don't render, check logs for path resolution issues:
+   - Set RUST_LOG=debug in .env for detailed logging
+
+4. **Port Forwarding**:
+   - Ensure you're accessing the correct port (8082 if using docker-compose.yml)
+   - The default application port inside the container is 8080
 
 ## 🧪 Testing & Quality
 
