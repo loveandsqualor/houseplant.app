@@ -149,7 +149,7 @@ If you encounter blank admin pages when running the application in Docker:
    - Set RUST_LOG=debug in .env for detailed logging
 
 4. **Port Forwarding**:
-   - Ensure you're accessing the correct port (8082 if using docker-compose.yml)
+   - Ensure you're accessing the correct port (8084 if using docker-compose.yml)
    - The default application port inside the container is 8080
 
 ## 🧪 Testing & Quality

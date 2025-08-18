@@ -5,7 +5,7 @@ if command -v docker-compose &> /dev/null; then
     echo "Starting application with Docker Compose..."
     docker-compose down
     docker-compose up --build -d
-    echo "Application is running at http://localhost:8082"
+    echo "Application is running at http://localhost:8084"
     echo "Admin login: admin@houseplant.app / admin123"
 else
     # Fallback to direct Docker commands
@@ -23,13 +23,13 @@ else
     # Run container
     docker run -d \
         --name botanical-bliss \
-        -p 8082:8080 \
+        -p 8084:8080 \
         -v $(pwd)/houseplants.db:/app/houseplants.db \
         -v $(pwd)/uploads:/app/uploads \
         -v $(pwd)/logs:/app/logs \
         --env-file .env \
         botanical-bliss
     
-    echo "Application is running at http://localhost:8082"
+    echo "Application is running at http://localhost:8084"
     echo "Admin login: admin@houseplant.app / admin123"
 fi
