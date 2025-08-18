@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Successful - Houseplant Haven</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <header>
+        <h1>Payment Successful!</h1>
+        <nav>
+            <a href="/">Home</a>
+            <a href="/menu">Menu</a>
+            {% if is_authenticated %}
+                <span class="user-greeting">Hello, {{ email }}</span>
+                <form action="/logout" method="POST" class="logout-form">
+                    <button type="submit" class="logout-button">Logout</button>
+                </form>
+            {% else %}
+                <a href="/login">Login</a>
+                <a href="/signup">Sign Up</a>
+            {% endif %}
+        </nav>
+    </header>
+    <main>
+        <div class="success-container">
+            <div class="success-icon">✓</div>
+            <h2>Thank You for Your Order!</h2>
+            <p>Your payment was successful and your order has been confirmed.</p>
+            <p>We'll get your new plant friends ready for their journey to their new home soon!</p>
+            
+            {% if is_authenticated and cart is defined and cart is not empty %}
+                {% if has_membership %}
+                    <div class="membership-info">
+                        <h3>Membership Activated!</h3>
+                        <p>Your annual membership has been activated. Enjoy free shipping and exclusive benefits for the next year!</p>
+                    </div>
+                {% endif %}
+            {% endif %}
+            
+            <div class="action-buttons">
+                <a href="/menu" class="cta-button">Continue Shopping</a>
+            </div>
+        </div>
+    </main>
+    <footer>
+        <p>&copy; 2025 Houseplant Haven. All rights reserved.</p>
+    </footer>
+</body>
+</html>

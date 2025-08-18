@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Houseplant Haven</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <header>
+        <h1>Houseplant Haven</h1>
+        <nav>
+            <a href="/">Home</a>
+            <a href="/admin/products">Admin</a>
+        </nav>
+    </header>
+
+    <main>
+        <h2>Our Plants</h2>
+        <div class="product-grid">
+            {% for product in products %}
+            <div class="product-card">
+                <img src="{{ product.image_url | default(value='https://placehold.co/300x300/2e8b57/ffffff?text=Plant') }}" alt="{{ product.name }}">
+                <h3>{{ product.name }}</h3>
+                <p>{{ product.description | default(value='A beautiful plant.') }}</p>
+                <div class="price">${{ product.price }}</div>
+                <button>Add to Cart</button>
+            </div>
+            {% endfor %}
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 Houseplant Haven. All rights reserved.</p>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to Botanical Bliss - Premium Houseplant Collection</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <header>
+        <h1>🌿 Botanical Bliss 🌿</h1>
+        <nav>
+            <a href="/">Home</a>
+            {% if is_authenticated %}
+                <a href="/menu">Shop Plants</a>
+                <a href="/cart">Cart</a>
+                <a href="/orders">Orders</a>
+                {% if is_admin %}
+                    <a href="/admin" class="admin-link">Admin</a>
+                {% endif %}
+                <span class="user-greeting">Hello, {{ email }}</span>
+                <form action="/logout" method="POST" class="logout-form">
+                    <button type="submit" class="logout-button">Logout</button>
+                </form>
+            {% else %}
+                <a href="/login">Login</a>
+                <a href="/signup">Join Us</a>
+            {% endif %}
+        </nav>
+    </header>
+
+    <main class="home-main">
+        <div class="hero-section">
+            <div class="hero-content">
+                <h2>🌱 Your Premium Plant Paradise Awaits 🌱</h2>
+                <p class="hero-description">
+                    Discover rare, exotic, and absolutely stunning houseplants curated exclusively for our members. 
+                    Transform your space into a botanical wonderland with our premium collection.
+                </p>
+                
+                {% if is_authenticated %}
+                    {% if user_id %}
+                        <a href="/menu" class="cta-button hero-button">🌿 Explore Our Collection</a>
+                    {% else %}
+                        <a href="/membership" class="cta-button hero-button">🌟 Become a Member - $125/year</a>
+                    {% endif %}
+                {% else %}
+                    <a href="/signup" class="cta-button hero-button">🌟 Join Our Plant Family</a>
+                {% endif %}
+            </div>
+        </div>
+        
+        <section class="features-section">
+            <div class="features-container">
+                <div class="feature-card">
+                    <div class="feature-icon">🌿</div>
+                    <h3>Rare & Exclusive</h3>
+                    <p>Access to hard-to-find plants and limited edition varieties you won't find anywhere else.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">📚</div>
+                    <h3>Expert Guidance</h3>
+                    <p>Complete care guides and personal support from our botanical experts.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">🚚</div>
+                    <h3>Premium Care</h3>
+                    <p>Carefully packaged and shipped with love to ensure your plants arrive perfectly.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">💚</div>
+                    <h3>Community</h3>
+                    <p>Join a passionate community of plant lovers sharing tips, photos, and inspiration.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="membership-preview">
+            <div class="membership-content">
+                <h3>🌟 Exclusive Membership Benefits</h3>
+                <div class="benefits-grid">
+                    <div class="benefit-item">
+                        <span class="benefit-icon">🌱</span>
+                        <span>Access to rare plant collection</span>
+                    </div>
+                    <div class="benefit-item">
+                        <span class="benefit-icon">🎁</span>
+                        <span>Monthly surprise accessories</span>
+                    </div>
+                    <div class="benefit-item">
+                        <span class="benefit-icon">📱</span>
+                        <span>Plant care mobile app</span>
+                    </div>
+                    <div class="benefit-item">
+                        <span class="benefit-icon">💬</span>
+                        <span>Exclusive community forum</span>
+                    </div>
+                    <div class="benefit-item">
+                        <span class="benefit-icon">🏆</span>
+                        <span>Priority customer support</span>
+                    </div>
+                    <div class="benefit-item">
+                        <span class="benefit-icon">✨</span>
+                        <span>Early access to new arrivals</span>
+                    </div>
+                </div>
+                
+                {% if not is_authenticated %}
+                    <div class="membership-cta">
+                        <p class="membership-price">Only <strong>$125/year</strong> for unlimited access</p>
+                        <a href="/signup" class="cta-button">Start Your Plant Journey</a>
+                    </div>
+                {% endif %}
+            </div>
+        </section>
+
+        <section class="featured-plants">
+            <h3>🌸 Featured in Our Collection</h3>
+            <p class="section-subtitle">A preview of the beautiful plants waiting for our members</p>
+            
+            <div class="featured-grid">
+                <div class="featured-card">
+                    <img src="https://images.unsplash.com/photo-1586164638686-5b84a75ae611?w=300&h=300&fit=crop" alt="Monstera Thai Constellation">
+                    <div class="featured-content">
+                        <h4>Monstera Thai Constellation</h4>
+                        <p class="plant-description">Stunning variegated leaves with natural marbling</p>
+                        <p class="price">$89.99</p>
+                        <div class="rarity-badge">Rare</div>
+                    </div>
+                </div>
+                
+                <div class="featured-card">
+                    <img src="https://images.unsplash.com/photo-1591958911892-c011d71b4719?w=300&h=300&fit=crop" alt="Fiddle Leaf Fig">
+                    <div class="featured-content">
+                        <h4>Fiddle Leaf Fig Tree</h4>
+                        <p class="plant-description">Instagram-famous statement plant</p>
+                        <p class="price">$129.99</p>
+                        <div class="rarity-badge popular">Popular</div>
+                    </div>
+                </div>
+                
+                <div class="featured-card">
+                    <img src="https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=300&h=300&fit=crop" alt="Pink Princess Philodendron">
+                    <div class="featured-content">
+                        <h4>Pink Princess Philodendron</h4>
+                        <p class="plant-description">Rare collector's dream with pink variegation</p>
+                        <p class="price">$149.99</p>
+                        <div class="rarity-badge ultra-rare">Ultra Rare</div>
+                    </div>
+                </div>
+                
+                <div class="featured-card">
+                    <img src="https://images.unsplash.com/photo-1521334884684-d80222895322?w=300&h=300&fit=crop" alt="Chinese Money Plant">
+                    <div class="featured-content">
+                        <h4>Chinese Money Plant</h4>
+                        <p class="plant-description">Adorable coin-shaped leaves</p>
+                        <p class="price">$39.99</p>
+                        <div class="rarity-badge beginner">Beginner Friendly</div>
+                    </div>
+                </div>
+            </div>
+            
+            {% if not is_authenticated %}
+                <div class="view-collection-cta">
+                    <p>Become a member to shop our full collection!</p>
+                    <a href="/signup" class="cta-button">Join Now</a>
+                </div>
+            {% endif %}
+        </section>
+
+        <section class="testimonials-section">
+            <h3>🌟 What Our Plant Parents Say</h3>
+            <div class="testimonials-grid">
+                <div class="testimonial-card">
+                    <div class="testimonial-content">
+                        <p>"The quality is absolutely incredible! My Thai Constellation arrived perfectly and is thriving. Worth every penny of the membership!"</p>
+                        <div class="testimonial-author">
+                            <div class="author-avatar">🌿</div>
+                            <div>
+                                <strong>Sarah M.</strong>
+                                <span>Plant Collector</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="testimonial-card">
+                    <div class="testimonial-content">
+                        <p>"The care guides and community support made me confident in caring for plants I never thought I could handle. Amazing!"</p>
+                        <div class="testimonial-author">
+                            <div class="author-avatar">🌱</div>
+                            <div>
+                                <strong>Marcus R.</strong>
+                                <span>New Plant Parent</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="testimonial-card">
+                    <div class="testimonial-content">
+                        <p>"I've transformed my apartment into a jungle paradise! The monthly accessories are such a delightful surprise."</p>
+                        <div class="testimonial-author">
+                            <div class="author-avatar">🌸</div>
+                            <div>
+                                <strong>Elena K.</strong>
+                                <span>Urban Jungle Enthusiast</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 Botanical Bliss. Growing together, naturally. 🌿</p>
+        <div class="footer-plants">🌱🌿🌸🌾🍃</div>
+    </footer>
+
+    <style>
+        .hero-section {
+            background: linear-gradient(135deg, rgba(74, 124, 89, 0.9), rgba(102, 187, 106, 0.9)), 
+                        url('https://images.unsplash.com/photo-1463936575829-25148e1db1b8?w=1200&h=800&fit=crop') center/cover;
+            padding: 100px 20px;
+            text-align: center;
+            color: white;
+            border-radius: 0 0 50px 50px;
+            margin-bottom: 60px;
+        }
+
+        .hero-content h2 {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .hero-description {
+            font-size: 1.3rem;
+            max-width: 700px;
+            margin: 0 auto 40px;
+            line-height: 1.6;
+        }
+
+        .hero-button {
+            font-size: 1.4rem;
+            padding: 20px 40px;
+            border-radius: 50px;
+            background: var(--gradient-2);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+        }
+
+        .features-section {
+            padding: 60px 20px;
+            background: var(--light-color);
+        }
+
+        .features-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+        }
+
+        .feature-card {
+            background: white;
+            padding: 40px 30px;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: var(--box-shadow);
+            transition: transform 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+        }
+
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 20px;
+        }
+
+        .feature-card h3 {
+            color: var(--primary-color);
+            margin-bottom: 15px;
+        }
+
+        .membership-preview {
+            padding: 80px 20px;
+            background: var(--gradient-1);
+            color: white;
+            text-align: center;
+        }
+
+        .membership-content {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .benefits-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 40px 0;
+        }
+
+        .benefit-item {
+            display: flex;
+            align-items: center;
+            background: rgba(255,255,255,0.1);
+            padding: 15px 20px;
+            border-radius: 15px;
+            font-size: 1.1rem;
+        }
+
+        .benefit-icon {
+            font-size: 1.5rem;
+            margin-right: 15px;
+        }
+
+        .membership-cta {
+            margin-top: 40px;
+        }
+
+        .membership-price {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+        }
+
+        .featured-plants {
+            padding: 80px 20px;
+            max-width: 1400px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .section-subtitle {
+            font-size: 1.2rem;
+            color: var(--dark-color);
+            margin-bottom: 50px;
+        }
+
+        .featured-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+
+        .featured-card {
+            background: white;
+            border-radius: 25px;
+            overflow: hidden;
+            box-shadow: var(--box-shadow);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .featured-card:hover {
+            transform: translateY(-10px) scale(1.02);
+        }
+
+        .featured-card img {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+        }
+
+        .featured-content {
+            padding: 25px;
+        }
+
+        .plant-description {
+            color: #666;
+            font-size: 0.95rem;
+            margin-bottom: 15px;
+        }
+
+        .price {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--secondary-color);
+            margin: 0;
+        }
+
+        .rarity-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            background: var(--accent-color);
+            color: white;
+        }
+
+        .rarity-badge.popular {
+            background: #ff9800;
+        }
+
+        .rarity-badge.ultra-rare {
+            background: #e91e63;
+        }
+
+        .rarity-badge.beginner {
+            background: #4caf50;
+        }
+
+        .view-collection-cta {
+            background: var(--light-color);
+            padding: 40px;
+            border-radius: 20px;
+            margin-top: 40px;
+        }
+
+        .testimonials-section {
+            padding: 80px 20px;
+            background: var(--light-color);
+        }
+
+        .testimonials-section h3 {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .testimonials-grid {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+        }
+
+        .testimonial-card {
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: var(--box-shadow);
+        }
+
+        .testimonial-content p {
+            font-style: italic;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        .testimonial-author {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .author-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--gradient-1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .testimonial-author strong {
+            display: block;
+            color: var(--primary-color);
+        }
+
+        .testimonial-author span {
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .footer-plants {
+            margin-top: 15px;
+            font-size: 1.5rem;
+            letter-spacing: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .hero-content h2 {
+                font-size: 2.5rem;
+            }
+            
+            .hero-description {
+                font-size: 1.1rem;
+            }
+            
+            .benefits-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .featured-grid, .testimonials-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</body>
+</html>

@@ -1,0 +1,37 @@
+# Rust build artifacts
+/target/
+**/*.rs.bk
+Cargo.lock
+
+# Environment variables
+.env
+
+# SQLite database files
+*.db
+*.sqlite
+*.sqlite3
+
+# macOS files
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# Build logs
+*.log
+
+# Temporary files
+*.tmp
+*.bak
+*.swp
+*.swo
+
+# IDE files
+.idea/
+.vscode/
+*.iml
+*.iws
+*.ipr
+
+# Test files
+cookies.txt

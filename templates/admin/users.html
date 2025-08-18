@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Users - Admin</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/style.css">
+    <style>
+        .admin-nav {
+            background: #2c5530;
+            padding: 1rem;
+            margin-bottom: 2rem;
+        }
+        .admin-nav a {
+            color: white;
+            text-decoration: none;
+            margin-right: 2rem;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            transition: background 0.3s;
+        }
+        .admin-nav a:hover, .admin-nav a.active {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        .users-table {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            overflow: hidden;
+            margin-bottom: 2rem;
+        }
+        .table-header {
+            background: #4a7c59;
+            color: white;
+            display: grid;
+            grid-template-columns: 2fr 2fr 1fr 1fr 1fr;
+            padding: 1rem;
+            font-weight: 600;
+        }
+        .table-row {
+            display: grid;
+            grid-template-columns: 2fr 2fr 1fr 1fr 1fr;
+            padding: 1rem;
+            border-bottom: 1px solid #eee;
+            align-items: center;
+        }
+        .table-row:last-child {
+            border-bottom: none;
+        }
+        .table-row:hover {
+            background: #f8f9fa;
+        }
+        .user-status {
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            text-align: center;
+        }
+        .status-active {
+            background: #d4edda;
+            color: #155724;
+        }
+        .status-inactive {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        .status-premium {
+            background: #fff3cd;
+            color: #856404;
+        }
+        .btn-small {
+            padding: 0.25rem 0.75rem;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 0.85rem;
+            margin-right: 0.5rem;
+        }
+        .btn-view {
+            background: #17a2b8;
+            color: white;
+        }
+        .btn-edit {
+            background: #28a745;
+            color: white;
+        }
+        .btn-disable {
+            background: #ffc107;
+            color: #212529;
+        }
+        .btn-small:hover {
+            opacity: 0.9;
+        }
+        .search-section {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+        .search-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr auto;
+            gap: 1rem;
+            align-items: end;
+        }
+        .form-group {
+            margin: 0;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+        .stats-summary {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        .stat-box {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #4a7c59;
+        }
+        .stat-label {
+            color: #666;
+            margin-top: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Manage Users</h1>
+        <nav>
+            <a href="/">Home</a>
+            {% if is_authenticated %}
+                <span class="user-greeting">Admin: {{ email }}</span>
+                <form action="/logout" method="POST" class="logout-form">
+                    <button type="submit" class="logout-button">Logout</button>
+                </form>
+            {% else %}
+                <a href="/login">Login</a>
+            {% endif %}
+        </nav>
+    </header>
+
+    <div class="admin-nav">
+        <a href="/admin/dashboard">Dashboard</a>
+        <a href="/admin/products">Products</a>
+        <a href="/admin/orders">Orders</a>
+        <a href="/admin/users" class="active">Users</a>
+    </div>
+
+    <main>
+        <div class="stats-summary">
+            <div class="stat-box">
+                <div class="stat-number">{{ total_users | default(value="127") }}</div>
+                <div class="stat-label">Total Users</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-number">{{ active_users | default(value="89") }}</div>
+                <div class="stat-label">Active Users</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-number">{{ premium_users | default(value="23") }}</div>
+                <div class="stat-label">Premium Members</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-number">{{ new_signups | default(value="12") }}</div>
+                <div class="stat-label">New This Week</div>
+            </div>
+        </div>
+
+        <div class="search-section">
+            <h3>Search Users</h3>
+            <form action="/admin/users" method="GET">
+                <div class="search-row">
+                    <div class="form-group">
+                        <label for="search">Search by Email</label>
+                        <input type="text" id="search" name="search" placeholder="Enter email address">
+                    </div>
+                    <div class="form-group">
+                        <label for="status">Status</label>
+                        <select id="status" name="status">
+                            <option value="">All Status</option>
+                            <option value="active">Active</option>
+                            <option value="inactive">Inactive</option>
+                            <option value="premium">Premium</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="sort">Sort By</label>
+                        <select id="sort" name="sort">
+                            <option value="created_desc">Newest First</option>
+                            <option value="created_asc">Oldest First</option>
+                            <option value="email">Email A-Z</option>
+                            <option value="orders">Most Orders</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="cta-button">Search</button>
+                </div>
+            </form>
+        </div>
+
+        <div class="users-table">
+            <div class="table-header">
+                <div>Email</div>
+                <div>Member Since</div>
+                <div>Orders</div>
+                <div>Status</div>
+                <div>Actions</div>
+            </div>
+            
+            {% if users %}
+                {% for user in users %}
+                <div class="table-row">
+                    <div>{{ user.email }}</div>
+                    <div>{{ user.created_at | date(format="%Y-%m-%d") }}</div>
+                    <div>{{ user.order_count | default(value=0) }}</div>
+                    <div>
+                        <span class="user-status status-{{ user.status | default(value='active') }}">
+                            {{ user.status | default(value='Active') | title }}
+                        </span>
+                    </div>
+                    <div>
+                        <a href="/admin/users/{{ user.id }}" class="btn-small btn-view">View</a>
+                        <a href="/admin/users/{{ user.id }}/edit" class="btn-small btn-edit">Edit</a>
+                        <button onclick="toggleUserStatus('{{ user.id }}')" class="btn-small btn-disable">Toggle</button>
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <!-- Sample users for demonstration -->
+                <div class="table-row">
+                    <div>john.doe@example.com</div>
+                    <div>2025-08-15</div>
+                    <div>3</div>
+                    <div><span class="user-status status-active">Active</span></div>
+                    <div>
+                        <a href="/admin/users/1" class="btn-small btn-view">View</a>
+                        <a href="/admin/users/1/edit" class="btn-small btn-edit">Edit</a>
+                        <button onclick="toggleUserStatus('1')" class="btn-small btn-disable">Toggle</button>
+                    </div>
+                </div>
+                <div class="table-row">
+                    <div>plant.lover@example.com</div>
+                    <div>2025-08-10</div>
+                    <div>7</div>
+                    <div><span class="user-status status-premium">Premium</span></div>
+                    <div>
+                        <a href="/admin/users/2" class="btn-small btn-view">View</a>
+                        <a href="/admin/users/2/edit" class="btn-small btn-edit">Edit</a>
+                        <button onclick="toggleUserStatus('2')" class="btn-small btn-disable">Toggle</button>
+                    </div>
+                </div>
+                <div class="table-row">
+                    <div>green.thumb@example.com</div>
+                    <div>2025-08-08</div>
+                    <div>1</div>
+                    <div><span class="user-status status-active">Active</span></div>
+                    <div>
+                        <a href="/admin/users/3" class="btn-small btn-view">View</a>
+                        <a href="/admin/users/3/edit" class="btn-small btn-edit">Edit</a>
+                        <button onclick="toggleUserStatus('3')" class="btn-small btn-disable">Toggle</button>
+                    </div>
+                </div>
+                <div class="table-row">
+                    <div>cactus.fan@example.com</div>
+                    <div>2025-08-05</div>
+                    <div>0</div>
+                    <div><span class="user-status status-inactive">Inactive</span></div>
+                    <div>
+                        <a href="/admin/users/4" class="btn-small btn-view">View</a>
+                        <a href="/admin/users/4/edit" class="btn-small btn-edit">Edit</a>
+                        <button onclick="toggleUserStatus('4')" class="btn-small btn-disable">Toggle</button>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 Houseplant Haven Admin. All rights reserved.</p>
+    </footer>
+
+    <script>
+        function toggleUserStatus(userId) {
+            if (confirm('Are you sure you want to toggle this user\'s status?')) {
+                fetch(`/admin/users/${userId}/toggle-status`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                })
+                .then(response => {
+                    if (response.ok) {
+                        location.reload();
+                    } else {
+                        alert('Error updating user status. Please try again.');
+                    }
+                })
+                .catch(error => {
+                    alert('Error updating user status. Please try again.');
+                });
+            }
+        }
+    </script>
+</body>
+</html>

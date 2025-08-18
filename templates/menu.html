@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Our Botanical Collection - Botanical Bliss</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <header>
+        <h1>🌿 Our Botanical Collection 🌿</h1>
+        <nav>
+            <a href="/">Home</a>
+            <a href="/menu">Shop Plants</a>
+            <a href="/cart">Cart</a>
+            {% if is_authenticated %}
+                <a href="/orders">Orders</a>
+                {% if is_admin %}
+                    <a href="/admin" class="admin-link">Admin</a>
+                {% endif %}
+                <span class="user-greeting">Hello, {{ email }}</span>
+                <form action="/logout" method="POST" class="logout-form">
+                    <button type="submit" class="logout-button">Logout</button>
+                </form>
+            {% else %}
+                <a href="/login">Login</a>
+                <a href="/signup">Join Us</a>
+            {% endif %}
+        </nav>
+    </header>
+
+    <main>
+        <div class="shop-header">
+            <div class="shop-hero">
+                <h2>🌱 Exclusive Member Collection 🌱</h2>
+                <p>Handpicked rare and exotic plants available only to our botanical community members.</p>
+                <div class="member-badge">
+                    ✨ Members Only Collection ✨
+                </div>
+            </div>
+        </div>
+        
+        <div class="products-container">
+            <div class="products-filter">
+                <h3>🔍 Filter by Care Level</h3>
+                <div class="filter-buttons">
+                    <button class="filter-btn active" data-filter="all">All Plants</button>
+                    <button class="filter-btn" data-filter="beginner">Beginner</button>
+                    <button class="filter-btn" data-filter="intermediate">Intermediate</button>
+                    <button class="filter-btn" data-filter="expert">Expert</button>
+                </div>
+            </div>
+
+            <div class="product-grid">
+                {% for product in products %}
+                <div class="product-card" data-category="{% if loop.index == 1 %}intermediate{% elif loop.index == 2 %}beginner{% elif loop.index == 3 %}expert{% else %}beginner{% endif %}">
+                    <div class="product-image-container">
+                        <img src="{{ product.image_url | default(value='https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=400&h=400&fit=crop') }}" alt="{{ product.name }}">
+                        <div class="plant-care-badge {% if loop.index == 1 %}intermediate{% elif loop.index == 2 %}beginner{% elif loop.index == 3 %}expert{% else %}beginner{% endif %}">
+                            {% if loop.index == 1 %}
+                                🌿 Intermediate
+                            {% elif loop.index == 2 %}
+                                🌱 Beginner
+                            {% elif loop.index == 3 %}
+                                🌸 Expert
+                            {% else %}
+                                🌱 Beginner
+                            {% endif %}
+                        </div>
+                        <div class="wishlist-btn">💚</div>
+                    </div>
+                    
+                    <div class="product-details">
+                        <h3>{{ product.name }}</h3>
+                        <p class="description">{{ product.description | default(value='A beautiful addition to your plant collection.') }}</p>
+                        
+                        <div class="plant-info">
+                            <div class="info-item">
+                                <span class="info-icon">💧</span>
+                                <span>{% if loop.index == 1 %}Weekly{% elif loop.index == 2 %}Weekly{% elif loop.index == 3 %}2x/week{% else %}Weekly{% endif %}</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-icon">☀️</span>
+                                <span>{% if loop.index == 1 %}Bright Indirect{% elif loop.index == 2 %}Medium Light{% elif loop.index == 3 %}Bright Indirect{% else %}Low Light{% endif %}</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-icon">📏</span>
+                                <span>{% if loop.index == 1 %}2-6ft{% elif loop.index == 2 %}4-8ft{% elif loop.index == 3 %}1-3ft{% else %}6-12in{% endif %}</span>
+                            </div>
+                        </div>
+                        
+                        <div class="price-section">
+                            <div class="price">${{ product.price }}</div>
+                            <div class="member-price">Member Price ✨</div>
+                        </div>
+                        
+                        <button class="add-to-cart-btn" onclick="addToCart({{ product.id }})">
+                            🛒 Add to Cart
+                        </button>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+            <div class="plant-care-section">
+                <h3>🌿 Plant Care Made Simple</h3>
+                <div class="care-grid">
+                    <div class="care-card">
+                        <div class="care-icon">💧</div>
+                        <h4>Watering Guide</h4>
+                        <p>Most plants prefer to dry out slightly between waterings. Check the soil with your finger!</p>
+                    </div>
+                    <div class="care-card">
+                        <div class="care-icon">☀️</div>
+                        <h4>Light Requirements</h4>
+                        <p>Bright indirect light works for most houseplants. Avoid direct sunlight on leaves.</p>
+                    </div>
+                    <div class="care-card">
+                        <div class="care-icon">🌡️</div>
+                        <h4>Temperature & Humidity</h4>
+                        <p>Room temperature (65-75°F) and 40-60% humidity keep most plants happy.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="member-benefits-reminder">
+                <h3>🎁 Your Membership Benefits</h3>
+                <div class="benefits-list">
+                    <div class="benefit">✅ Access to this exclusive collection</div>
+                    <div class="benefit">✅ Expert plant care support</div>
+                    <div class="benefit">✅ Free shipping on all orders</div>
+                    <div class="benefit">✅ Monthly plant care accessories</div>
+                    <div class="benefit">✅ Community forum access</div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 Botanical Bliss. Growing together, naturally. 🌿</p>
+    </footer>
+
+    <script>
+        // Filter functionality
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                // Update active button
+                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                
+                const filter = this.dataset.filter;
+                const products = document.querySelectorAll('.product-card');
+                
+                products.forEach(product => {
+                    if (filter === 'all' || product.dataset.category === filter) {
+                        product.style.display = 'block';
+                        product.style.animation = 'fadeIn 0.5s ease-in';
+                    } else {
+                        product.style.display = 'none';
+                    }
+                });
+            });
+        });
+
+        // Wishlist functionality
+        document.querySelectorAll('.wishlist-btn').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                this.classList.toggle('active');
+                this.textContent = this.classList.contains('active') ? '❤️' : '💚';
+                
+                // Add some animation
+                this.style.transform = 'scale(1.2)';
+                setTimeout(() => {
+                    this.style.transform = 'scale(1)';
+                }, 200);
+            });
+        });
+
+        // Add to cart function
+        async function addToCart(productId) {
+            try {
+                const response = await fetch('/add_to_cart', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(productId)
+                });
+                const result = await response.json();
+                
+                if (result.success) {
+                    // Show success notification
+                    showNotification('🌱 Added to cart!', 'success');
+                    
+                    // Add cart animation
+                    const button = event.target;
+                    button.style.background = 'var(--success-color)';
+                    button.textContent = '✅ Added!';
+                    
+                    setTimeout(() => {
+                        button.style.background = '';
+                        button.textContent = '🛒 Add to Cart';
+                    }, 2000);
+                } else {
+                    showNotification('Failed to add to cart', 'error');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showNotification('An error occurred', 'error');
+            }
+        }
+
+        function showNotification(message, type) {
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            notification.textContent = message;
+            
+            // Style the notification
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: ${type === 'success' ? 'var(--success-color)' : 'var(--danger-color)'};
+                color: white;
+                padding: 15px 25px;
+                border-radius: 25px;
+                font-weight: 600;
+                z-index: 1000;
+                transform: translateX(400px);
+                transition: transform 0.3s ease;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            `;
+            
+            document.body.appendChild(notification);
+            
+            // Animate in
+            setTimeout(() => {
+                notification.style.transform = 'translateX(0)';
+            }, 10);
+            
+            // Remove after delay
+            setTimeout(() => {
+                notification.style.transform = 'translateX(400px)';
+                setTimeout(() => {
+                    document.body.removeChild(notification);
+                }, 300);
+            }, 3000);
+        }
+
+        // Smooth scrolling for internal links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+    </script>
+
+    <style>
+        .shop-header {
+            background: var(--gradient-1);
+            color: white;
+            padding: 60px 20px;
+            text-align: center;
+            border-radius: 0 0 50px 50px;
+            margin-bottom: 40px;
+        }
+
+        .shop-hero h2 {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .shop-hero p {
+            font-size: 1.2rem;
+            margin-bottom: 25px;
+            opacity: 0.9;
+        }
+
+        .member-badge {
+            background: rgba(255,255,255,0.2);
+            padding: 10px 25px;
+            border-radius: 25px;
+            display: inline-block;
+            font-weight: 600;
+            backdrop-filter: blur(10px);
+        }
+
+        .products-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .products-filter {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .products-filter h3 {
+            margin-bottom: 20px;
+            color: var(--primary-color);
+        }
+
+        .filter-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            background: white;
+            border: 2px solid var(--accent-color);
+            color: var(--primary-color);
+            padding: 12px 25px;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+
+        .filter-btn:hover,
+        .filter-btn.active {
+            background: var(--accent-color);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 30px;
+            margin-bottom: 80px;
+        }
+
+        .product-card {
+            background: white;
+            border-radius: 25px;
+            overflow: hidden;
+            box-shadow: var(--box-shadow);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .product-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(74, 124, 89, 0.2);
+        }
+
+        .product-image-container {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .product-card img {
+            width: 100%;
+            height: 280px;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .product-card:hover img {
+            transform: scale(1.1);
+        }
+
+        .plant-care-badge {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            backdrop-filter: blur(10px);
+            color: white;
+        }
+
+        .plant-care-badge.beginner {
+            background: rgba(76, 175, 80, 0.9);
+        }
+
+        .plant-care-badge.intermediate {
+            background: rgba(255, 152, 0, 0.9);
+        }
+
+        .plant-care-badge.expert {
+            background: rgba(233, 30, 99, 0.9);
+        }
+
+        .wishlist-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1.2rem;
+        }
+
+        .wishlist-btn:hover {
+            background: white;
+            transform: scale(1.1);
+        }
+
+        .product-details {
+            padding: 25px;
+        }
+
+        .product-details h3 {
+            color: var(--primary-color);
+            margin-bottom: 10px;
+            font-size: 1.4rem;
+        }
+
+        .description {
+            color: #666;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+
+        .plant-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            background: var(--light-color);
+            padding: 15px;
+            border-radius: 15px;
+        }
+
+        .info-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            flex: 1;
+        }
+
+        .info-icon {
+            font-size: 1.2rem;
+            margin-bottom: 5px;
+        }
+
+        .info-item span:last-child {
+            font-size: 0.9rem;
+            color: #666;
+            font-weight: 500;
+        }
+
+        .price-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .price {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--secondary-color);
+        }
+
+        .member-price {
+            font-size: 0.9rem;
+            color: var(--accent-color);
+            font-weight: 600;
+        }
+
+        .add-to-cart-btn {
+            width: 100%;
+            background: var(--gradient-1);
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 15px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .add-to-cart-btn:hover {
+            background: var(--gradient-2);
+            transform: translateY(-2px);
+        }
+
+        .plant-care-section {
+            background: var(--light-color);
+            padding: 60px 40px;
+            border-radius: 30px;
+            margin-bottom: 60px;
+            text-align: center;
+        }
+
+        .plant-care-section h3 {
+            margin-bottom: 40px;
+            color: var(--primary-color);
+        }
+
+        .care-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+        }
+
+        .care-card {
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: var(--box-shadow);
+        }
+
+        .care-icon {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+        }
+
+        .care-card h4 {
+            color: var(--primary-color);
+            margin-bottom: 15px;
+        }
+
+        .member-benefits-reminder {
+            background: var(--gradient-1);
+            color: white;
+            padding: 50px 40px;
+            border-radius: 30px;
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .member-benefits-reminder h3 {
+            margin-bottom: 30px;
+            color: white;
+        }
+
+        .benefits-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+        }
+
+        .benefit {
+            background: rgba(255,255,255,0.1);
+            padding: 15px;
+            border-radius: 15px;
+            font-weight: 500;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 768px) {
+            .shop-hero h2 {
+                font-size: 2rem;
+            }
+            
+            .product-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .filter-buttons {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .plant-info {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .info-item {
+                flex-direction: row;
+                justify-content: center;
+                gap: 10px;
+            }
+            
+            .plant-care-section, .member-benefits-reminder {
+                padding: 30px 20px;
+            }
+            
+            .care-grid, .benefits-list {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</body>
+</html>

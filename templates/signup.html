@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up - Houseplant Haven</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <header>
+        <h1>Houseplant Haven</h1>
+        <nav>
+            <a href="/">Home</a>
+            <a href="/menu">Menu</a>
+            <a href="/login">Login</a>
+        </nav>
+    </header>
+
+    <main>
+        <div class="auth-container">
+            <h2>Create Account</h2>
+            {% if error %}
+            <div class="error-message">
+                {{ error }}
+            </div>
+            {% endif %}
+            <form action="/signup" method="POST" class="auth-form" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="phone_number">Phone Number</label>
+                    <input type="tel" id="phone_number" name="phone_number" placeholder="+1-555-123-4567" required>
+                </div>
+                <div class="form-group">
+                    <label for="birthday">Birthday</label>
+                    <input type="date" id="birthday" name="birthday" required>
+                </div>
+                <div class="form-group">
+                    <label for="profile_photo">Profile Photo</label>
+                    <input type="file" id="profile_photo" name="profile_photo" accept="image/*">
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" required>
+                </div>
+                <div class="form-group">
+                    <label for="confirm_password">Confirm Password</label>
+                    <input type="password" id="confirm_password" name="confirm_password" required>
+                </div>
+                <button type="submit" class="cta-button">Create Account</button>
+            </form>
+            <p class="auth-link">Already have an account? <a href="/login">Login here</a></p>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 Houseplant Haven. All rights reserved.</p>
+    </footer>
+</body>
+</html>

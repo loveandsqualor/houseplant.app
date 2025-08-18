@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Houseplant Haven</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/style.css">
+    <style>
+        .admin-nav {
+            background: #2c5530;
+            padding: 1rem;
+            margin-bottom: 2rem;
+        }
+        .admin-nav a {
+            color: white;
+            text-decoration: none;
+            margin-right: 2rem;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            transition: background 0.3s;
+        }
+        .admin-nav a:hover, .admin-nav a.active {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+        .stat-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #4a7c59;
+            margin-bottom: 0.5rem;
+        }
+        .stat-label {
+            color: #666;
+            font-weight: 500;
+        }
+        .recent-orders {
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .order-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 1rem 0;
+            border-bottom: 1px solid #eee;
+        }
+        .order-item:last-child {
+            border-bottom: none;
+        }
+        .order-status {
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+        .status-completed {
+            background: #d4edda;
+            color: #155724;
+        }
+        .status-pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 3rem;
+        }
+        .action-button {
+            display: block;
+            background: #4a7c59;
+            color: white;
+            text-decoration: none;
+            padding: 1rem;
+            text-align: center;
+            border-radius: 8px;
+            transition: background 0.3s;
+        }
+        .action-button:hover {
+            background: #2c5530;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Admin Dashboard</h1>
+        <nav>
+            <a href="/">Home</a>
+            {% if is_authenticated %}
+                <span class="user-greeting">Admin: {{ email }}</span>
+                <form action="/logout" method="POST" class="logout-form">
+                    <button type="submit" class="logout-button">Logout</button>
+                </form>
+            {% else %}
+                <a href="/login">Login</a>
+            {% endif %}
+        </nav>
+    </header>
+
+    <div class="admin-nav">
+        <a href="/admin/dashboard" class="active">Dashboard</a>
+        <a href="/admin/products">Products</a>
+        <a href="/admin/orders">Orders</a>
+        <a href="/admin/users">Users</a>
+    </div>
+
+    <main>
+        <div class="quick-actions">
+            <a href="/admin/products/new" class="action-button">Add New Product</a>
+            <a href="/admin/orders" class="action-button">View All Orders</a>
+            <a href="/admin/users" class="action-button">Manage Users</a>
+            <a href="/admin/analytics" class="action-button">View Analytics</a>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-number">{{ total_orders | default(value="42") }}</div>
+                <div class="stat-label">Total Orders</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">${{ total_revenue | default(value="1,247") }}</div>
+                <div class="stat-label">Total Revenue</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">{{ total_products | default(value="8") }}</div>
+                <div class="stat-label">Active Products</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">{{ total_users | default(value="127") }}</div>
+                <div class="stat-label">Registered Users</div>
+            </div>
+        </div>
+
+        <div class="recent-orders">
+            <h2>Recent Orders</h2>
+            {% if recent_orders %}
+                {% for order in recent_orders %}
+                <div class="order-item">
+                    <div>
+                        <strong>Order #{{ order.id }}</strong><br>
+                        <small>{{ order.customer_email }} - {{ order.created_at }}</small>
+                    </div>
+                    <div>
+                        <div class="order-status status-{{ order.status }}">{{ order.status | title }}</div>
+                        <div style="text-align: right; margin-top: 0.5rem;">
+                            <strong>${{ order.total }}</strong>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <div class="order-item">
+                    <div>
+                        <strong>Order #001</strong><br>
+                        <small>customer@example.com - 2025-08-17 14:30</small>
+                    </div>
+                    <div>
+                        <div class="order-status status-completed">Completed</div>
+                        <div style="text-align: right; margin-top: 0.5rem;">
+                            <strong>$45.99</strong>
+                        </div>
+                    </div>
+                </div>
+                <div class="order-item">
+                    <div>
+                        <strong>Order #002</strong><br>
+                        <small>user@example.com - 2025-08-17 13:15</small>
+                    </div>
+                    <div>
+                        <div class="order-status status-pending">Pending</div>
+                        <div style="text-align: right; margin-top: 0.5rem;">
+                            <strong>$32.50</strong>
+                        </div>
+                    </div>
+                </div>
+                <div class="order-item">
+                    <div>
+                        <strong>Order #003</strong><br>
+                        <small>plant.lover@example.com - 2025-08-17 11:45</small>
+                    </div>
+                    <div>
+                        <div class="order-status status-completed">Completed</div>
+                        <div style="text-align: right; margin-top: 0.5rem;">
+                            <strong>$78.25</strong>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 Houseplant Haven Admin. All rights reserved.</p>
+    </footer>
+</body>
+</html>
