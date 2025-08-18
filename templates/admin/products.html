@@ -21,128 +21,181 @@
             transition: background 0.3s;
         }
         .admin-nav a:hover, .admin-nav a.active {
-            background: rgba(255, 255, 255, 0.2);
+            background: rgba(255,255,255,0.2);
         }
-        .products-grid {
+        .admin-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        .stat-card {
+            background: #f5f5f5;
+            border-radius: 8px;
+            padding: 1.5rem;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .stat-title {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 0.5rem;
+        }
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 600;
+            color: #2c5530;
+        }
+        .products-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 2rem;
+        }
+        .products-table th {
+            text-align: left;
+            padding: 1rem;
+            background: #f0f0f0;
+            border-bottom: 2px solid #ddd;
+        }
+        .products-table td {
+            padding: 1rem;
+            border-bottom: 1px solid #ddd;
+        }
+        .btn {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            text-decoration: none;
+            margin-right: 0.5rem;
+            font-size: 0.9rem;
+            cursor: pointer;
+        }
+        .btn-edit {
+            background: #ffce00;
+            color: #333;
+        }
+        .btn-delete {
+            background: #ff4c4c;
+            color: white;
+        }
+        .product-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
             gap: 2rem;
-            margin-bottom: 2rem;
         }
-        .product-admin-card {
-            background: white;
+        .product-card {
+            border: 1px solid #ddd;
             border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
             overflow: hidden;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
         }
         .product-image {
-            width: 100%;
             height: 200px;
-            background: linear-gradient(135deg, #66bb6a, #4a7c59);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 3rem;
+            width: 100%;
+            background-size: cover;
+            background-position: center;
         }
         .product-details {
-            padding: 1.5rem;
+            padding: 1rem;
         }
         .product-name {
-            font-size: 1.25rem;
+            font-size: 1.2rem;
             font-weight: 600;
             margin-bottom: 0.5rem;
         }
         .product-price {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: #4a7c59;
+            font-size: 1.1rem;
+            color: #2c5530;
             margin-bottom: 1rem;
+            font-weight: 500;
         }
         .product-stock {
             margin-bottom: 1rem;
-            padding: 0.5rem;
-            background: #f8f9fa;
+            padding: 0.3rem 0.7rem;
             border-radius: 4px;
-        }
-        .low-stock {
-            background: #fff3cd;
-            color: #856404;
+            display: inline-block;
+            font-size: 0.9rem;
+            background: #e8f5e9;
+            color: #2c5530;
         }
         .out-of-stock {
-            background: #f8d7da;
-            color: #721c24;
+            background: #ffebee;
+            color: #c62828;
         }
-        .product-actions {
-            display: flex;
-            gap: 0.5rem;
+        .low-stock {
+            background: #fff8e1;
+            color: #ff8f00;
         }
-        .btn {
-            padding: 0.5rem 1rem;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            text-decoration: none;
-            text-align: center;
-            font-size: 0.9rem;
-            flex: 1;
-        }
-        .btn-edit {
-            background: #007bff;
-            color: white;
-        }
-        .btn-delete {
-            background: #dc3545;
-            color: white;
-        }
-        .btn:hover {
-            opacity: 0.9;
-        }
-        .add-product-section {
-            background: white;
+        .add-product-form {
+            background: #f9f9f9;
             padding: 2rem;
             border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
             margin-bottom: 2rem;
         }
-        .form-group {
-            margin-bottom: 1rem;
+        .form-title {
+            margin-bottom: 1.5rem;
         }
-        .form-group label {
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        label {
             display: block;
             margin-bottom: 0.5rem;
             font-weight: 500;
         }
-        .form-group input,
-        .form-group textarea,
-        .form-group select {
+        input[type="text"],
+        input[type="number"],
+        textarea {
             width: 100%;
-            padding: 0.75rem;
+            padding: 0.8rem;
             border: 1px solid #ddd;
             border-radius: 4px;
+            font-family: inherit;
+        }
+        .btn-add {
+            background: #2c5530;
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 4px;
+            cursor: pointer;
             font-size: 1rem;
+            transition: background 0.3s;
         }
-        .form-group textarea {
-            height: 100px;
-            resize: vertical;
+        .btn-add:hover {
+            background: #1c3a20;
         }
-        .form-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1rem;
+        .user-greeting {
+            color: white;
+            margin-left: auto;
+        }
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+            background-color: #4a7c59;
+            color: white;
         }
     </style>
 </head>
 <body>
     <header>
-        <h1>Manage Products</h1>
+        <h1>Houseplant Haven</h1>
         <nav>
-            <a href="/">Home</a>
             {% if is_authenticated %}
                 <span class="user-greeting">Admin: {{ email }}</span>
-                <form action="/logout" method="POST" class="logout-form">
-                    <button type="submit" class="logout-button">Logout</button>
-                </form>
+                <a href="/admin">Admin</a>
+                <a href="/logout">Logout</a>
             {% else %}
                 <a href="/login">Login</a>
             {% endif %}
@@ -150,128 +203,85 @@
     </header>
 
     <div class="admin-nav">
-        <a href="/admin/dashboard">Dashboard</a>
-        <a href="/admin/products" class="active">Products</a>
-        <a href="/admin/orders">Orders</a>
-        <a href="/admin/users">Users</a>
+        <div class="admin-container">
+            <a href="/admin/dashboard">Dashboard</a>
+            <a href="/admin/orders">Orders</a>
+            <a href="/admin/products" class="active">Products</a>
+            <a href="/admin/users">Users</a>
+            <a href="/admin/analytics">Analytics</a>
+        </div>
     </div>
 
-    <main>
-        <div class="add-product-section">
-            <h2>Add New Product</h2>
-            <form action="/admin/products/add" method="POST">
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="name">Product Name</label>
-                        <input type="text" id="name" name="name" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="price">Price ($)</label>
-                        <input type="number" id="price" name="price" step="0.01" required>
-                    </div>
+    <div class="admin-container">
+        <h1>Product Management</h1>
+        
+        <div class="add-product-form">
+            <h2 class="form-title">Add New Product</h2>
+            <form action="/admin/products/add" method="POST" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label for="name">Product Name</label>
+                    <input type="text" id="name" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="price">Price ($)</label>
+                    <input type="number" id="price" name="price" step="0.01" min="0" required>
+                </div>
+                <div class="form-group">
+                    <label for="stock">Stock Quantity</label>
+                    <input type="number" id="stock" name="stock" min="0" required>
                 </div>
                 <div class="form-group">
                     <label for="description">Description</label>
-                    <textarea id="description" name="description" required></textarea>
+                    <textarea id="description" name="description" rows="3"></textarea>
                 </div>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="category">Category</label>
-                        <select id="category" name="category" required>
-                            <option value="">Select Category</option>
-                            <option value="succulents">Succulents</option>
-                            <option value="flowering">Flowering Plants</option>
-                            <option value="foliage">Foliage Plants</option>
-                            <option value="herbs">Herbs</option>
-                            <option value="cacti">Cacti</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="stock">Stock Quantity</label>
-                        <input type="number" id="stock" name="stock" required>
-                    </div>
+                <div class="form-group">
+                    <label for="image">Product Image</label>
+                    <input type="file" id="image" name="image" accept="image/*">
                 </div>
-                <button type="submit" class="cta-button">Add Product</button>
+                <button type="submit" class="btn-add">Add Product</button>
             </form>
         </div>
 
         <h2>Current Products</h2>
-        <div class="products-grid">
+        <div class="product-grid">
             {% if products %}
                 {% for product in products %}
-                <div class="product-admin-card">
-                    <div class="product-image">🌱</div>
+                <div class="product-card">
+                    <div class="product-image" style="background-image: url('{{ product.image_url | default(value="/static/images/default-plant.jpg") }}');"></div>
                     <div class="product-details">
                         <div class="product-name">{{ product.name }}</div>
                         <div class="product-price">${{ product.price }}</div>
-                        <div class="product-stock {% if product.stock == 0 %}out-of-stock{% elif product.stock < 5 %}low-stock{% endif %}">
-                            {% if product.stock == 0 %}
-                                Out of Stock
-                            {% elif product.stock < 5 %}
-                                Low Stock: {{ product.stock }} left
+                        <div class="product-stock">
+                            {% if product.stock is defined %}
+                                {% if product.stock == 0 %}
+                                    Out of Stock
+                                {% elif product.stock < 5 %}
+                                    Low Stock: {{ product.stock }} left
+                                {% else %}
+                                    In Stock: {{ product.stock }} available
+                                {% endif %}
                             {% else %}
-                                In Stock: {{ product.stock }} available
+                                In Stock: {{ stock_default }} available
                             {% endif %}
                         </div>
-                        <p>{{ product.description | truncate(length=100) }}</p>
+                        <p>{{ product.description | default(value="No description available") }}</p>
                         <div class="product-actions">
                             <a href="/admin/products/{{ product.id }}/edit" class="btn btn-edit">Edit</a>
                             <form action="/admin/products/delete/{{ product.id }}" method="POST" style="display: inline;">
-                                <button type="submit" class="btn btn-delete" onclick="return confirm('Are you sure you want to delete this product?')">Delete</button>
+                                <button type="submit" class="btn btn-delete">Delete</button>
                             </form>
                         </div>
                     </div>
                 </div>
                 {% endfor %}
             {% else %}
-                <!-- Sample products for demonstration -->
-                <div class="product-admin-card">
-                    <div class="product-image">🌵</div>
-                    <div class="product-details">
-                        <div class="product-name">Snake Plant</div>
-                        <div class="product-price">$24.99</div>
-                        <div class="product-stock">In Stock: 15 available</div>
-                        <p>Low-maintenance plant perfect for beginners. Thrives in low light conditions.</p>
-                        <div class="product-actions">
-                            <a href="/admin/products/1/edit" class="btn btn-edit">Edit</a>
-                            <button onclick="deleteProduct(1)" class="btn btn-delete">Delete</button>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="product-admin-card">
-                    <div class="product-image">🌿</div>
-                    <div class="product-details">
-                        <div class="product-name">Monstera Deliciosa</div>
-                        <div class="product-price">$35.99</div>
-                        <div class="product-stock low-stock">Low Stock: 3 left</div>
-                        <p>Beautiful climbing plant with unique split leaves. Great for bright, indirect light.</p>
-                        <div class="product-actions">
-                            <a href="/admin/products/2/edit" class="btn btn-edit">Edit</a>
-                            <button onclick="deleteProduct(2)" class="btn btn-delete">Delete</button>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="product-admin-card">
-                    <div class="product-image">🌸</div>
-                    <div class="product-details">
-                        <div class="product-name">Peace Lily</div>
-                        <div class="product-price">$28.50</div>
-                        <div class="product-stock out-of-stock">Out of Stock</div>
-                        <p>Elegant flowering plant that signals when it needs water by drooping.</p>
-                        <div class="product-actions">
-                            <a href="/admin/products/3/edit" class="btn btn-edit">Edit</a>
-                            <button onclick="deleteProduct(3)" class="btn btn-delete">Delete</button>
-                        </div>
-                    </div>
-                </div>
+                <p>No products found. Add your first product above.</p>
             {% endif %}
         </div>
-    </main>
+    </div>
 
     <footer>
-        <p>&copy; 2025 Houseplant Haven Admin. All rights reserved.</p>
+        <p>&copy; 2025 Houseplant Haven. All rights reserved.</p>
     </footer>
 </body>
 </html>

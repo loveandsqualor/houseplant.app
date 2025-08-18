@@ -21,142 +21,162 @@
             transition: background 0.3s;
         }
         .admin-nav a:hover, .admin-nav a.active {
-            background: rgba(255, 255, 255, 0.2);
+            background: rgba(255,255,255,0.2);
         }
-        .users-table {
-            background: white;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            overflow: hidden;
-            margin-bottom: 2rem;
+        .admin-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
         }
-        .table-header {
-            background: #4a7c59;
-            color: white;
-            display: grid;
-            grid-template-columns: 2fr 2fr 1fr 1fr 1fr;
-            padding: 1rem;
-            font-weight: 600;
-        }
-        .table-row {
-            display: grid;
-            grid-template-columns: 2fr 2fr 1fr 1fr 1fr;
-            padding: 1rem;
-            border-bottom: 1px solid #eee;
-            align-items: center;
-        }
-        .table-row:last-child {
-            border-bottom: none;
-        }
-        .table-row:hover {
-            background: #f8f9fa;
-        }
-        .user-status {
-            padding: 0.25rem 0.75rem;
-            border-radius: 20px;
-            font-size: 0.85rem;
-            font-weight: 500;
-            text-align: center;
-        }
-        .status-active {
-            background: #d4edda;
-            color: #155724;
-        }
-        .status-inactive {
-            background: #f8d7da;
-            color: #721c24;
-        }
-        .status-premium {
-            background: #fff3cd;
-            color: #856404;
-        }
-        .btn-small {
-            padding: 0.25rem 0.75rem;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            text-decoration: none;
-            font-size: 0.85rem;
-            margin-right: 0.5rem;
-        }
-        .btn-view {
-            background: #17a2b8;
-            color: white;
-        }
-        .btn-edit {
-            background: #28a745;
-            color: white;
-        }
-        .btn-disable {
-            background: #ffc107;
-            color: #212529;
-        }
-        .btn-small:hover {
-            opacity: 0.9;
-        }
-        .search-section {
-            background: white;
-            padding: 1.5rem;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            margin-bottom: 2rem;
-        }
-        .search-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr auto;
-            gap: 1rem;
-            align-items: end;
-        }
-        .form-group {
-            margin: 0;
-        }
-        .form-group label {
-            display: block;
-            margin-bottom: 0.5rem;
-            font-weight: 500;
-        }
-        .form-group input,
-        .form-group select {
-            width: 100%;
-            padding: 0.75rem;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            font-size: 1rem;
-        }
-        .stats-summary {
+        .stats-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 1rem;
             margin-bottom: 2rem;
         }
-        .stat-box {
-            background: white;
-            padding: 1.5rem;
+        .stat-card {
+            background: #f5f5f5;
             border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 1.5rem;
             text-align: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .stat-title {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 0.5rem;
         }
         .stat-number {
             font-size: 2rem;
-            font-weight: 700;
-            color: #4a7c59;
+            font-weight: 600;
+            color: #2c5530;
         }
-        .stat-label {
-            color: #666;
-            margin-top: 0.5rem;
+        .users-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 2rem;
+        }
+        .users-table th {
+            text-align: left;
+            padding: 1rem;
+            background: #f0f0f0;
+            border-bottom: 2px solid #ddd;
+        }
+        .users-table td {
+            padding: 1rem;
+            border-bottom: 1px solid #ddd;
+        }
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 0.5rem;
+        }
+        .active-status {
+            background: #4caf50;
+        }
+        .inactive-status {
+            background: #f44336;
+        }
+        .search-bar {
+            margin-bottom: 2rem;
+            width: 100%;
+            display: flex;
+            gap: 1rem;
+        }
+        .search-input {
+            flex-grow: 1;
+            padding: 0.8rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+        .search-btn {
+            background: #2c5530;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 0 1.5rem;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+        .search-btn:hover {
+            background: #1c3a20;
+        }
+        .filter-dropdown {
+            padding: 0.8rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
+            cursor: pointer;
+        }
+        .btn {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            text-decoration: none;
+            margin-right: 0.5rem;
+            font-size: 0.9rem;
+            cursor: pointer;
+        }
+        .btn-view {
+            background: #2196f3;
+            color: white;
+        }
+        .btn-edit {
+            background: #ffce00;
+            color: #333;
+        }
+        .btn-delete {
+            background: #ff4c4c;
+            color: white;
+        }
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin: 2rem 0;
+        }
+        .page-item {
+            margin: 0 0.3rem;
+        }
+        .page-link {
+            display: block;
+            padding: 0.5rem 0.8rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            color: #333;
+            text-decoration: none;
+            transition: background 0.3s;
+        }
+        .page-link:hover,
+        .page-item.active .page-link {
+            background: #2c5530;
+            color: white;
+            border-color: #2c5530;
+        }
+        .user-greeting {
+            color: white;
+            margin-left: auto;
+        }
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+            background-color: #4a7c59;
+            color: white;
         }
     </style>
 </head>
 <body>
     <header>
-        <h1>Manage Users</h1>
+        <h1>Houseplant Haven</h1>
         <nav>
-            <a href="/">Home</a>
             {% if is_authenticated %}
                 <span class="user-greeting">Admin: {{ email }}</span>
-                <form action="/logout" method="POST" class="logout-form">
-                    <button type="submit" class="logout-button">Logout</button>
-                </form>
+                <a href="/admin">Admin</a>
+                <a href="/logout">Logout</a>
             {% else %}
                 <a href="/login">Login</a>
             {% endif %}
@@ -164,165 +184,110 @@
     </header>
 
     <div class="admin-nav">
-        <a href="/admin/dashboard">Dashboard</a>
-        <a href="/admin/products">Products</a>
-        <a href="/admin/orders">Orders</a>
-        <a href="/admin/users" class="active">Users</a>
+        <div class="admin-container">
+            <a href="/admin/dashboard">Dashboard</a>
+            <a href="/admin/orders">Orders</a>
+            <a href="/admin/products">Products</a>
+            <a href="/admin/users" class="active">Users</a>
+            <a href="/admin/analytics">Analytics</a>
+        </div>
     </div>
 
-    <main>
-        <div class="stats-summary">
-            <div class="stat-box">
-                <div class="stat-number">{{ total_users | default(value="127") }}</div>
-                <div class="stat-label">Total Users</div>
+    <div class="admin-container">
+        <h1>User Management</h1>
+        
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-title">Total Users</div>
+                <div class="stat-number">{{ total_users | default(value=0) }}</div>
             </div>
-            <div class="stat-box">
-                <div class="stat-number">{{ active_users | default(value="89") }}</div>
-                <div class="stat-label">Active Users</div>
+            <div class="stat-card">
+                <div class="stat-title">Active Users</div>
+                <div class="stat-number">{{ active_users | default(value=0) }}</div>
             </div>
-            <div class="stat-box">
-                <div class="stat-number">{{ premium_users | default(value="23") }}</div>
-                <div class="stat-label">Premium Members</div>
+            <div class="stat-card">
+                <div class="stat-title">New This Month</div>
+                <div class="stat-number">{{ new_users_month | default(value=0) }}</div>
             </div>
-            <div class="stat-box">
-                <div class="stat-number">{{ new_signups | default(value="12") }}</div>
-                <div class="stat-label">New This Week</div>
+            <div class="stat-card">
+                <div class="stat-title">Premium Members</div>
+                <div class="stat-number">{{ premium_users | default(value=0) }}</div>
             </div>
         </div>
 
-        <div class="search-section">
-            <h3>Search Users</h3>
-            <form action="/admin/users" method="GET">
-                <div class="search-row">
-                    <div class="form-group">
-                        <label for="search">Search by Email</label>
-                        <input type="text" id="search" name="search" placeholder="Enter email address">
-                    </div>
-                    <div class="form-group">
-                        <label for="status">Status</label>
-                        <select id="status" name="status">
-                            <option value="">All Status</option>
-                            <option value="active">Active</option>
-                            <option value="inactive">Inactive</option>
-                            <option value="premium">Premium</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="sort">Sort By</label>
-                        <select id="sort" name="sort">
-                            <option value="created_desc">Newest First</option>
-                            <option value="created_asc">Oldest First</option>
-                            <option value="email">Email A-Z</option>
-                            <option value="orders">Most Orders</option>
-                        </select>
-                    </div>
-                    <button type="submit" class="cta-button">Search</button>
-                </div>
-            </form>
+        <div class="search-bar">
+            <input type="text" class="search-input" placeholder="Search users...">
+            <select class="filter-dropdown">
+                <option value="all">All Users</option>
+                <option value="active">Active Only</option>
+                <option value="inactive">Inactive Only</option>
+                <option value="premium">Premium Only</option>
+            </select>
+            <button class="search-btn">Search</button>
         </div>
 
-        <div class="users-table">
-            <div class="table-header">
-                <div>Email</div>
-                <div>Member Since</div>
-                <div>Orders</div>
-                <div>Status</div>
-                <div>Actions</div>
-            </div>
-            
-            {% if users %}
-                {% for user in users %}
-                <div class="table-row">
-                    <div>{{ user.email }}</div>
-                    <div>{{ user.created_at | date(format="%Y-%m-%d") }}</div>
-                    <div>{{ user.order_count | default(value=0) }}</div>
-                    <div>
-                        <span class="user-status status-{{ user.status | default(value='active') }}">
-                            {{ user.status | default(value='Active') | title }}
-                        </span>
-                    </div>
-                    <div>
-                        <a href="/admin/users/{{ user.id }}" class="btn-small btn-view">View</a>
-                        <a href="/admin/users/{{ user.id }}/edit" class="btn-small btn-edit">Edit</a>
-                        <button onclick="toggleUserStatus('{{ user.id }}')" class="btn-small btn-disable">Toggle</button>
-                    </div>
-                </div>
-                {% endfor %}
-            {% else %}
-                <!-- Sample users for demonstration -->
-                <div class="table-row">
-                    <div>john.doe@example.com</div>
-                    <div>2025-08-15</div>
-                    <div>3</div>
-                    <div><span class="user-status status-active">Active</span></div>
-                    <div>
-                        <a href="/admin/users/1" class="btn-small btn-view">View</a>
-                        <a href="/admin/users/1/edit" class="btn-small btn-edit">Edit</a>
-                        <button onclick="toggleUserStatus('1')" class="btn-small btn-disable">Toggle</button>
-                    </div>
-                </div>
-                <div class="table-row">
-                    <div>plant.lover@example.com</div>
-                    <div>2025-08-10</div>
-                    <div>7</div>
-                    <div><span class="user-status status-premium">Premium</span></div>
-                    <div>
-                        <a href="/admin/users/2" class="btn-small btn-view">View</a>
-                        <a href="/admin/users/2/edit" class="btn-small btn-edit">Edit</a>
-                        <button onclick="toggleUserStatus('2')" class="btn-small btn-disable">Toggle</button>
-                    </div>
-                </div>
-                <div class="table-row">
-                    <div>green.thumb@example.com</div>
-                    <div>2025-08-08</div>
-                    <div>1</div>
-                    <div><span class="user-status status-active">Active</span></div>
-                    <div>
-                        <a href="/admin/users/3" class="btn-small btn-view">View</a>
-                        <a href="/admin/users/3/edit" class="btn-small btn-edit">Edit</a>
-                        <button onclick="toggleUserStatus('3')" class="btn-small btn-disable">Toggle</button>
-                    </div>
-                </div>
-                <div class="table-row">
-                    <div>cactus.fan@example.com</div>
-                    <div>2025-08-05</div>
-                    <div>0</div>
-                    <div><span class="user-status status-inactive">Inactive</span></div>
-                    <div>
-                        <a href="/admin/users/4" class="btn-small btn-view">View</a>
-                        <a href="/admin/users/4/edit" class="btn-small btn-edit">Edit</a>
-                        <button onclick="toggleUserStatus('4')" class="btn-small btn-disable">Toggle</button>
-                    </div>
-                </div>
-            {% endif %}
+        <div class="table-responsive">
+            <table class="users-table">
+                <thead>
+                    <tr>
+                        <th>User ID</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Status</th>
+                        <th>Joined Date</th>
+                        <th>Member Type</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if users %}
+                        {% for user in users %}
+                        <tr>
+                            <td>{{ user.id }}</td>
+                            <td>{{ user.name }}</td>
+                            <td>{{ user.email }}</td>
+                            <td>
+                                {% if user.is_active is defined %}
+                                    {% if user.is_active %}
+                                        <span class="status-indicator active-status"></span> Active
+                                    {% else %}
+                                        <span class="status-indicator inactive-status"></span> Inactive
+                                    {% endif %}
+                                {% else %}
+                                    <span class="status-indicator active-status"></span> Active
+                                {% endif %}
+                            </td>
+                            <td>{{ user.created_at | default(value="") }}</td>
+                            <td>{{ user.membership | default(value="Standard") }}</td>
+                            <td>
+                                <a href="/admin/users/{{ user.id }}" class="btn btn-view">View</a>
+                                <a href="/admin/users/{{ user.id }}/edit" class="btn btn-edit">Edit</a>
+                                <form action="/admin/users/delete/{{ user.id }}" method="POST" style="display: inline;">
+                                    <button type="submit" class="btn btn-delete">Delete</button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    {% else %}
+                        <tr>
+                            <td colspan="7">No users found.</td>
+                        </tr>
+                    {% endif %}
+                </tbody>
+            </table>
         </div>
-    </main>
+
+        <div class="pagination">
+            <div class="page-item"><a class="page-link" href="#">Previous</a></div>
+            <div class="page-item active"><a class="page-link" href="#">1</a></div>
+            <div class="page-item"><a class="page-link" href="#">2</a></div>
+            <div class="page-item"><a class="page-link" href="#">3</a></div>
+            <div class="page-item"><a class="page-link" href="#">Next</a></div>
+        </div>
+    </div>
 
     <footer>
-        <p>&copy; 2025 Houseplant Haven Admin. All rights reserved.</p>
+        <p>&copy; 2025 Houseplant Haven. All rights reserved.</p>
     </footer>
-
-    <script>
-        function toggleUserStatus(userId) {
-            if (confirm('Are you sure you want to toggle this user\'s status?')) {
-                fetch(`/admin/users/${userId}/toggle-status`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    }
-                })
-                .then(response => {
-                    if (response.ok) {
-                        location.reload();
-                    } else {
-                        alert('Error updating user status. Please try again.');
-                    }
-                })
-                .catch(error => {
-                    alert('Error updating user status. Please try again.');
-                });
-            }
-        }
-    </script>
 </body>
 </html>

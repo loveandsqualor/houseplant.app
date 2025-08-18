@@ -1,0 +1,129 @@
+# 🌿 Botanical Bliss Cargo Configuration
+# Optimized build settings for botanical ecommerce platform
+
+[build]
+# Use available CPU cores for compilation (let Cargo decide)
+# jobs = 0  # This causes an error, let Cargo auto-detect
+
+# Optimize for the target CPU architecture
+rustflags = [
+    "-C", "target-cpu=native",
+    "-C", "opt-level=3",
+    "-C", "lto=thin",
+    "-C", "codegen-units=1",
+    "-C", "panic=abort"
+]
+
+[target.x86_64-unknown-linux-gnu]
+# Linux-specific optimizations
+rustflags = [
+    "-C", "target-cpu=native",
+    "-C", "link-arg=-fuse-ld=lld"
+]
+
+[target.x86_64-apple-darwin]
+# macOS-specific optimizations (no LLD linker on macOS)
+rustflags = [
+    "-C", "target-cpu=native"
+]
+
+[net]
+# Network reliability settings
+retry = 10
+git-fetch-with-cli = true
+offline = false
+
+# Registry configuration
+[source.crates-io]
+registry = "https://github.com/rust-lang/crates.io-index"
+
+# HTTP settings for reliable downloads
+[http]
+check-revoke = false
+# Remove cainfo to let system handle certificates automatically
+# cainfo = "/etc/ssl/certs/ca-certificates.crt"
+timeout = 60
+low-speed-limit = 5
+multiplexing = false
+user-agent = "botanical-bliss-cargo"
+# Additional SSL troubleshooting options
+ssl-version = "tlsv1.2"
+debug = false
+
+# Registry configuration for faster dependency resolution
+[registries.crates-io]
+index = "https://github.com/rust-lang/crates.io-index"
+protocol = "sparse"
+
+# Profile configurations for different build types
+[profile.dev]
+# Development profile - fast compilation
+opt-level = 0
+debug = 2
+split-debuginfo = "unpacked"
+debug-assertions = true
+overflow-checks = true
+lto = false
+panic = 'unwind'
+incremental = true
+codegen-units = 256
+rpath = false
+
+[profile.release]
+# Production release profile - maximum optimization
+opt-level = 3
+debug = false
+split-debuginfo = "off"
+debug-assertions = false
+overflow-checks = false
+lto = "fat"
+panic = 'abort'
+incremental = false
+codegen-units = 1
+rpath = false
+strip = "symbols"
+
+[profile.test]
+# Test profile
+opt-level = 0
+debug = 2
+debug-assertions = true
+overflow-checks = true
+lto = false
+panic = 'unwind'
+incremental = true
+codegen-units = 256
+
+# Custom profile for benchmarking
+[profile.bench]
+opt-level = 3
+debug = false
+debug-assertions = false
+overflow-checks = false
+lto = true
+panic = 'abort'
+incremental = false
+codegen-units = 1
+
+# Future compatibility settings
+[future-incompat-report]
+frequency = "always"
+
+# Terminal settings
+[term]
+verbose = false
+color = "auto"
+progress.when = "auto"
+progress.width = 80
+
+# Note: resolver version should be in Cargo.toml, not config.toml
+
+# Environment variables for consistent builds
+[env]
+# Optimize for release builds
+CARGO_PROFILE_RELEASE_LTO = "true"
+CARGO_PROFILE_RELEASE_CODEGEN_UNITS = "1"
+CARGO_PROFILE_RELEASE_PANIC = "abort"
+
+# Development environment
+RUST_BACKTRACE = { value = "1", relative = true }
