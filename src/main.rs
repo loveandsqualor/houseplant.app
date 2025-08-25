@@ -351,7 +351,6 @@ fn is_user_member(session: &Session) -> bool {
 }
 
 fn is_admin(session: &Session) -> bool {
-    // Properly check admin status from session
     session.get::<bool>("is_admin").unwrap_or(Some(false)).unwrap_or(false)
 }
 
@@ -1494,39 +1493,30 @@ async fn admin_products(session: Session, pool: web::Data<SqlitePool>, tera: web
         }
     };
     
-    // Enhance products with stock information for template
-    #[derive(Serialize)]
-    struct ProductWithStock {
-        id: i64,
-        name: String,
-        price: f64,
-        description: Option<String>,
-        image_url: Option<String>,
-        stock: i32,
-    }
-
-    let products_with_stock: Vec<ProductWithStock> = products.into_iter()
-        .map(|p| ProductWithStock {
-            id: p.id,
-            name: p.name,
-            price: p.price,
-            description: p.description,
-            image_url: p.image_url,
-            // Add random stock values for demonstration
-            stock: match p.id % 3 {
-                0 => 0,  // Out of stock
-                1 => 3,  // Low stock
-                _ => 15, // In stock
-            },
-        })
-        .collect();
-    
     let mut context = Context::new();
     
-    context.insert("products", &products_with_stock);
-    
-    // Add stock information default value
-    context.insert("stock_default", &10);
+    // If products array is empty, use sample data
+    if products.is_empty() {
+        let sample_products = vec![
+            Product {
+                id: 1,
+                name: "Snake Plant".to_string(),
+                description: Some("Low-maintenance plant perfect for beginners.".to_string()),
+                price: 24.99,
+                image_url: Some("/static/images/snake-plant.jpg".to_string()),
+            },
+            Product {
+                id: 2,
+                name: "Monstera Deliciosa".to_string(),
+                description: Some("Beautiful climbing plant with unique split leaves.".to_string()),
+                price: 35.99,
+                image_url: Some("/static/images/monstera.jpg".to_string()),
+            }
+        ];
+        context.insert("products", &sample_products);
+    } else {
+        context.insert("products", &products);
+    }
     
     context.insert("is_authenticated", &is_authenticated(&session));
     context.insert("is_admin", &is_admin(&session));
@@ -1548,7 +1538,6 @@ async fn admin_products(session: Session, pool: web::Data<SqlitePool>, tera: web
 struct ProductFormData {
     name: String,
     price: f64,
-    stock: i32,
     description: String,
     image_url: String,
 }
@@ -1558,26 +1547,11 @@ async fn add_product(session: Session, pool: web::Data<SqlitePool>, form: web::F
         return HttpResponse::Forbidden().body("Access denied");
     }
     
-    // Validate data before insertion
-    if form.name.is_empty() || form.price <= 0.0 {
-        return HttpResponse::BadRequest().body("Invalid product data");
-    }
-    
-    // Use a default image URL if one wasn't provided
-    let image_url = if form.image_url.is_empty() {
-        "/static/images/default-plant.jpg".to_string()
-    } else {
-        form.image_url.clone()
-    };
-    
-    // We're not actually using the stock field in the database yet, 
-    // but we could add it to the schema later
-    
     let result = sqlx::query("INSERT INTO products (name, price, description, image_url) VALUES (?, ?, ?, ?)")
         .bind(&form.name)
         .bind(&form.price)
         .bind(&form.description)
-        .bind(&image_url)
+        .bind(&form.image_url)
         .execute(pool.as_ref())
         .await;
         
@@ -1625,17 +1599,6 @@ async fn admin_users(session: Session, pool: web::Data<SqlitePool>, tera: web::D
         }
     };
     
-    // Create enhanced user type for the template
-    #[derive(Serialize)]
-    struct EnhancedUser {
-        id: i64,
-        email: String,
-        name: String,
-        is_active: bool,
-        created_at: String,
-        membership: String,
-    }
-    
     // Sample user data to display if no users found
     let sample_users = vec![
         User {
@@ -1664,43 +1627,14 @@ async fn admin_users(session: Session, pool: web::Data<SqlitePool>, tera: web::D
         },
     ];
     
-    // Convert users to enhanced format for the template
-    let enhanced_users: Vec<EnhancedUser> = if !users.is_empty() {
-        users.iter().map(|user| {
-            EnhancedUser {
-                id: user.id,
-                email: user.email.clone(),
-                name: user.email.split('@').next().unwrap_or("User").to_string(),
-                is_active: true,
-                created_at: user.created_at.clone(),
-                membership: if user.is_member { "Premium".to_string() } else { "Standard".to_string() },
-            }
-        }).collect()
-    } else {
-        sample_users.iter().map(|user| {
-            EnhancedUser {
-                id: user.id,
-                email: user.email.clone(),
-                name: user.email.split('@').next().unwrap_or("User").to_string(),
-                is_active: true,
-                created_at: user.created_at.clone(),
-                membership: if user.is_member { "Premium".to_string() } else { "Standard".to_string() },
-            }
-        }).collect()
-    };
-    
     let mut context = Context::new();
     
-    // Use enhanced users for the template
-    context.insert("users", &enhanced_users);
-    
-    // Add required statistics variables
-    let user_count = if !users.is_empty() { users.len() } else { sample_users.len() };
-    context.insert("total_users", &user_count);
-    context.insert("active_users", &(user_count * 3 / 4)); // Sample calculation
-    context.insert("premium_users", &(user_count / 3)); // Sample calculation
-    context.insert("new_users_month", &(user_count / 5)); // Add the missing variable
-    
+    // Use real users if available, otherwise use sample data
+    if !users.is_empty() {
+        context.insert("users", &users);
+    } else {
+        context.insert("users", &sample_users);
+    }
     context.insert("is_authenticated", &is_authenticated(&session));
     context.insert("is_admin", &is_admin(&session));
     
@@ -1727,243 +1661,46 @@ async fn health_check() -> impl Responder {
     }))
 }
 
-async fn export_users_csv(session: Session, pool: web::Data<SqlitePool>, query: web::Query<std::collections::HashMap<String, String>>) -> impl Responder {
+async fn export_users_csv(session: Session, pool: web::Data<SqlitePool>) -> impl Responder {
     if !is_admin(&session) {
         return HttpResponse::Forbidden().body("Access denied");
     }
-    
-    // Get format parameter, default to CSV
-    let format = query.get("format").unwrap_or(&"csv".to_string()).to_lowercase();
     
     let users = match sqlx::query_as::<_, User>("SELECT * FROM users").fetch_all(pool.as_ref()).await {
         Ok(users) => users,
         Err(e) => {
-            error!("Database error when fetching users for export: {}", e);
+            error!("Database error when fetching users for CSV: {}", e);
             return HttpResponse::InternalServerError().body("Database error");
         }
     };
 
-    match format.as_str() {
-        "json" => {
-            // Export as JSON
-            match serde_json::to_string_pretty(&users) {
-                Ok(json) => {
-                    HttpResponse::Ok()
-                        .content_type("application/json")
-                        .append_header(("Content-Disposition", "attachment; filename=\"users.json\""))
-                        .body(json)
-                },
-                Err(e) => {
-                    error!("JSON serialization error: {}", e);
-                    HttpResponse::InternalServerError().body("Error creating JSON")
-                }
-            }
-        },
-        // Default to CSV
-        _ => {
-            let mut wtr = csv::Writer::from_writer(vec![]);
-            match wtr.serialize(users) {
-                Ok(_) => (),
-                Err(e) => {
-                    error!("CSV serialization error: {}", e);
-                    return HttpResponse::InternalServerError().body("Error creating CSV");
-                }
-            }
-            
-            let data = match wtr.into_inner() {
-                Ok(vec) => match String::from_utf8(vec) {
-                    Ok(s) => s,
-                    Err(e) => {
-                        error!("UTF-8 conversion error: {}", e);
-                        return HttpResponse::InternalServerError().body("Error creating CSV");
-                    }
-                },
-                Err(e) => {
-                    error!("CSV writer error: {}", e);
-                    return HttpResponse::InternalServerError().body("Error creating CSV");
-                }
-            };
-
-            HttpResponse::Ok()
-                .content_type("text/csv")
-                .append_header(("Content-Disposition", "attachment; filename=\"users.csv\""))
-                .body(data)
+    let mut wtr = csv::Writer::from_writer(vec![]);
+    match wtr.serialize(users) {
+        Ok(_) => (),
+        Err(e) => {
+            error!("CSV serialization error: {}", e);
+            return HttpResponse::InternalServerError().body("Error creating CSV");
         }
     }
-}
-
-// New function for exporting analytics data
-async fn export_analytics_data(session: Session, pool: web::Data<SqlitePool>, query: web::Query<std::collections::HashMap<String, String>>) -> impl Responder {
-    if !is_admin(&session) {
-        return HttpResponse::Forbidden().body("Access denied");
-    }
     
-    #[derive(Serialize)]
-    struct AnalyticsData {
-        total_users: i64,
-        total_orders: i64,
-        total_revenue: f64,
-        total_products: i64,
-        orders_by_status: std::collections::HashMap<String, i64>,
-        revenue_by_month: Vec<(String, f64)>
-    }
-    
-    // Get format parameter, default to JSON
-    let format = query.get("format").unwrap_or(&"json".to_string()).to_lowercase();
-    
-    // Get basic statistics
-    let total_users: Result<(i64,), _> = sqlx::query_as("SELECT COUNT(*) FROM users")
-        .fetch_one(pool.as_ref())
-        .await;
-        
-    let total_orders: Result<(i64,), _> = sqlx::query_as("SELECT COUNT(*) FROM orders")
-        .fetch_one(pool.as_ref())
-        .await;
-        
-    let total_products: Result<(i64,), _> = sqlx::query_as("SELECT COUNT(*) FROM products")
-        .fetch_one(pool.as_ref())
-        .await;
-        
-    let total_revenue: Result<(f64,), _> = sqlx::query_as("SELECT COALESCE(SUM(total_amount), 0.0) / 100.0 FROM orders WHERE status = 'completed'")
-        .fetch_one(pool.as_ref())
-        .await;
-        
-    // Get orders by status
-    let orders_by_status_query = sqlx::query("SELECT status, COUNT(*) as count FROM orders GROUP BY status")
-        .fetch_all(pool.as_ref())
-        .await;
-        
-    // Get revenue by month
-    let revenue_by_month_query = sqlx::query(
-        "SELECT strftime('%Y-%m', created_at) as month, SUM(total_amount) / 100.0 as revenue
-         FROM orders WHERE status = 'completed'
-         GROUP BY strftime('%Y-%m', created_at)
-         ORDER BY month DESC
-         LIMIT 12"
-    )
-    .fetch_all(pool.as_ref())
-    .await;
-    
-    // Compile analytics data
-    let mut analytics = AnalyticsData {
-        total_users: total_users.map_or(0, |(count,)| count),
-        total_orders: total_orders.map_or(0, |(count,)| count),
-        total_products: total_products.map_or(0, |(count,)| count),
-        total_revenue: total_revenue.map_or(0.0, |(amount,)| amount),
-        orders_by_status: std::collections::HashMap::new(),
-        revenue_by_month: Vec::new()
+    let data = match wtr.into_inner() {
+        Ok(vec) => match String::from_utf8(vec) {
+            Ok(s) => s,
+            Err(e) => {
+                error!("UTF-8 conversion error: {}", e);
+                return HttpResponse::InternalServerError().body("Error creating CSV");
+            }
+        },
+        Err(e) => {
+            error!("CSV writer error: {}", e);
+            return HttpResponse::InternalServerError().body("Error creating CSV");
+        }
     };
-    
-    // Add orders by status
-    if let Ok(status_rows) = orders_by_status_query {
-        for row in status_rows {
-            let status: String = row.get("status");
-            let count: i64 = row.get("count");
-            analytics.orders_by_status.insert(status, count);
-        }
-    }
-    
-    // Add revenue by month
-    if let Ok(month_rows) = revenue_by_month_query {
-        for row in month_rows {
-            let month: String = row.get("month");
-            let revenue: f64 = row.get("revenue");
-            analytics.revenue_by_month.push((month, revenue));
-        }
-    }
-    
-    match format.as_str() {
-        "csv" => {
-            // Create a flat structure for CSV
-            #[derive(Serialize)]
-            struct FlatAnalyticsRow {
-                metric_name: String,
-                metric_value: String
-            }
-            
-            let mut flat_data = Vec::new();
-            
-            // Add basic metrics
-            flat_data.push(FlatAnalyticsRow {
-                metric_name: "Total Users".to_string(),
-                metric_value: analytics.total_users.to_string()
-            });
-            
-            flat_data.push(FlatAnalyticsRow {
-                metric_name: "Total Orders".to_string(),
-                metric_value: analytics.total_orders.to_string()
-            });
-            
-            flat_data.push(FlatAnalyticsRow {
-                metric_name: "Total Products".to_string(),
-                metric_value: analytics.total_products.to_string()
-            });
-            
-            flat_data.push(FlatAnalyticsRow {
-                metric_name: "Total Revenue".to_string(),
-                metric_value: format!("${:.2}", analytics.total_revenue)
-            });
-            
-            // Add status metrics
-            for (status, count) in &analytics.orders_by_status {
-                flat_data.push(FlatAnalyticsRow {
-                    metric_name: format!("Orders - {}", status),
-                    metric_value: count.to_string()
-                });
-            }
-            
-            // Add monthly revenue
-            for (month, revenue) in &analytics.revenue_by_month {
-                flat_data.push(FlatAnalyticsRow {
-                    metric_name: format!("Revenue - {}", month),
-                    metric_value: format!("${:.2}", revenue)
-                });
-            }
-            
-            // Write to CSV
-            let mut wtr = csv::Writer::from_writer(vec![]);
-            for row in flat_data {
-                if let Err(e) = wtr.serialize(row) {
-                    error!("CSV serialization error: {}", e);
-                    return HttpResponse::InternalServerError().body("Error creating CSV");
-                }
-            }
-            
-            let data = match wtr.into_inner() {
-                Ok(vec) => match String::from_utf8(vec) {
-                    Ok(s) => s,
-                    Err(e) => {
-                        error!("UTF-8 conversion error: {}", e);
-                        return HttpResponse::InternalServerError().body("Error creating CSV");
-                    }
-                },
-                Err(e) => {
-                    error!("CSV writer error: {}", e);
-                    return HttpResponse::InternalServerError().body("Error creating CSV");
-                }
-            };
 
-            HttpResponse::Ok()
-                .content_type("text/csv")
-                .append_header(("Content-Disposition", "attachment; filename=\"analytics.csv\""))
-                .body(data)
-        },
-        // Default to JSON
-        _ => {
-            match serde_json::to_string_pretty(&analytics) {
-                Ok(json) => {
-                    HttpResponse::Ok()
-                        .content_type("application/json")
-                        .append_header(("Content-Disposition", "attachment; filename=\"analytics.json\""))
-                        .body(json)
-                },
-                Err(e) => {
-                    error!("JSON serialization error: {}", e);
-                    HttpResponse::InternalServerError().body("Error creating JSON")
-                }
-            }
-        }
-    }
+    HttpResponse::Ok()
+        .content_type("text/csv")
+        .append_header(("Content-Disposition", "attachment; filename=\"users.csv\""))
+        .body(data)
 }
 
 // --- Main Function ---
@@ -2066,8 +1803,7 @@ async fn main() -> std::io::Result<()> {
                     .route("/products/delete/{id}", web::post().to(delete_product))
                     .route("/products/new", web::get().to(admin_products))
                     .route("/users", web::get().to(admin_users))
-                    .route("/users/export", web::get().to(export_users_csv))
-                    .route("/analytics/export", web::get().to(export_analytics_data)),
+                    .route("/users/export", web::get().to(export_users_csv)),
             )
     })
     .bind(&bind_addr)?

@@ -25,7 +25,7 @@
                 {{ error }}
             </div>
             {% endif %}
-            <form action="/signup" method="POST" class="auth-form">
+            <form action="/signup" method="POST" class="auth-form" enctype="multipart/form-data">
                 <div class="form-group">
                     <label for="email">Email</label>
                     <input type="email" id="email" name="email" required>
@@ -38,11 +38,10 @@
                     <label for="birthday">Birthday</label>
                     <input type="date" id="birthday" name="birthday" required>
                 </div>
-                <!-- File upload removed temporarily -->
-                <!-- <div class="form-group">
+                <div class="form-group">
                     <label for="profile_photo">Profile Photo</label>
                     <input type="file" id="profile_photo" name="profile_photo" accept="image/*">
-                </div> -->
+                </div>
                 <div class="form-group">
                     <label for="password">Password</label>
                     <input type="password" id="password" name="password" required>
