@@ -29,10 +29,10 @@ ENV CARGO_REGISTRIES_CRATES_IO_PROTOCOL=sparse
 ENV RUSTFLAGS="-C target-cpu=native -C opt-level=3"
 ENV RUST_BACKTRACE=1
 
-# Copy dependency files first for better caching
-COPY Cargo.toml Cargo.lock ./
-
-# Create dummy source to cache dependencies
+    # Copy dependency files first for better caching
+    COPY Cargo.toml ./
+    # Copy Cargo.lock if it exists (optional)
+    RUN touch Cargo.lock# Create dummy source to cache dependencies
 RUN mkdir -p src && \
     echo 'fn main() { println!("Building dependencies..."); }' > src/main.rs
 

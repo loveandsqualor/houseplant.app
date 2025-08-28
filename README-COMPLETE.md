@@ -132,6 +132,7 @@ CREATE TABLE orders (
 
 ## 🌟 Key Features Demonstrated
 - ✅ User Authentication (sign in capability)
+Allow partner website menus to dispay products on our menus
 - ✅ Payment Processing (take payments)
 - ✅ Product Catalog (items for sale)
 - ✅ Shopping Cart & Checkout
