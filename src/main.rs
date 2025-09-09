@@ -38,7 +38,7 @@ struct CartItem {
     image_url: Option<String>,
 }
 
-#[derive(Debug, sqlx::FromRow, Serialize, Deserialize)]
+[derive(Debug, sqlx::FromRow, Serialize, Deserialize)]
 struct User {
     id: i64,
     email: String,
